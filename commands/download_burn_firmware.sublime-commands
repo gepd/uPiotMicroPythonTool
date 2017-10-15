@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "UPIOT: Download And Burn Last Firmware", 
+        "command": "upiot_download_burn_firmware"
+    }
+]
