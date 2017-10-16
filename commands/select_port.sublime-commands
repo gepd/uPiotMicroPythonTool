@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "UPIOT: Select Serial Port", 
+        "command": "upiot_select_port"
+    }
+]
