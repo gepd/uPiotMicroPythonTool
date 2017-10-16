@@ -61,7 +61,7 @@ class upiotBurnFirmwareCommand(WindowCommand):
         options = self.get_board_options('esp32')
         options.append(firmware)
 
-        port = self.get_serial_port()
+        port = pserial.get_serial_port()
         if(not port):
             return
 
@@ -107,27 +107,3 @@ class upiotBurnFirmwareCommand(WindowCommand):
         options.append('write_flash ' + wf)
 
         return options
-
-    def get_serial_port(self):
-        ports = pserial.ports_list()
-        if(ports):
-            items = []
-            for port in ports:
-                items.append(port[1])
-            ports = items
-
-        settings = sublime.load_settings(tools.SETTINGS_NAME)
-        port_setting = settings.get(setting_key, None)
-
-        if(ports and len(ports) == 1):
-            return ports[0]
-        elif(ports and len(ports) == 0):
-            return None
-        elif(not port_setting):
-            self.window.run_command('upiot_select_port')
-            return False
-        elif(port_setting not in ports):
-            self.window.run_command('select_port')
-            return False
-
-        return port_setting
