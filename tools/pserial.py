@@ -4,6 +4,8 @@ from sublime import platform
 from . import pyserial
 from .pyserial.tools import list_ports
 
+setting_key = 'serial_ports'
+
 
 def ports_list():
     """List of serial ports

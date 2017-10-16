@@ -9,8 +9,6 @@ from .. import tools
 from ..tools import paths
 from ..tools import pserial
 
-setting_key = 'serial_ports'
-
 
 class upiotBurnFirmwareCommand(WindowCommand):
     items = None
