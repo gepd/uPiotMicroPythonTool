@@ -22,7 +22,7 @@ import argparse
 import hashlib
 import inspect
 import os
-import serial
+import pyserial as serial
 import struct
 import sys
 import time
