@@ -1,5 +1,7 @@
-from .upiot_download_burn_firmware import UpiotDownloadBurnFirmwareCommand
+from .burn_firmware import upiotBurnFirmwareCommand
+from .download_firmware import upiotDownloadFirmwareCommand
 
 __all__ = [
-    'UpiotDownloadBurnFirmwareCommand'
+    'upiotBurnFirmwareCommand',
+    'upiotDownloadFirmwareCommand'
 ]

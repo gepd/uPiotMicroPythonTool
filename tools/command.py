@@ -34,7 +34,7 @@ def run_command(command, cwd=None):
 
 
 def prepare_command(options):
-    esptool = paths.get_esptool()
+    esptool = paths.esptool_file()
 
     cmd = ['python', '"' + esptool + '"']
     cmd.extend(options)
