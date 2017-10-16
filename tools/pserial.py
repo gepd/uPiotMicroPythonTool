@@ -1,7 +1,8 @@
 from __future__ import absolute_import
 
-from sublime import platform
+import sublime
 from . import pyserial
+from ..tools import SETTINGS_NAME
 from .pyserial.tools import list_ports
 
 setting_key = 'serial_ports'
@@ -23,7 +24,7 @@ def ports_list():
     for port_no, description, address in ports:
         for dev_name in dev_names:
             if(address != 'n/a' and
-                    dev_name in port_no or platform() == 'windows'):
+                    dev_name in port_no or sublime.platform() == 'windows'):
                 serial_ports.append([description, port_no])
                 break
 
