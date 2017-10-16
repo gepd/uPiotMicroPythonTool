@@ -1,0 +1,6 @@
+[
+    {
+        "caption": "UPIOT: Download Firmware", 
+        "command": "upiot_download_firmware"
+    }
+]
