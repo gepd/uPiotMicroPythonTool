@@ -1,14 +1,18 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
-from os import path
 from .. import requests
+from os import path, makedirs
 from sublime import version, active_window
 
 from ..tools.boards import get_boards_list
 from ..tools.command import run_command
+from ..tools.quick_panel import quick_panel
 
 VERSION = (0, 0, 1)
 ACTIVE_VIEW = None
+
+global SETTINGS_NAME
+SETTINGS_NAME = 'upiot.sublime-settings'
 
 
 def versionize(raw_version):
@@ -28,7 +32,8 @@ def versionize(raw_version):
     return version
 
 __all__ = ["get_boards_list",
-           "run_command"]
+           "run_command",
+           "quick_panel"]
 
 
 def get_headers():

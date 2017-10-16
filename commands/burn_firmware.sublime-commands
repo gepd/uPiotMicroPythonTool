@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "UPIOT: Burn Firmware", 
+        "command": "upiot_burn_firmware"
+    }
+]
