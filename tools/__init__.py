@@ -94,6 +94,17 @@ def download_file(file_url, dst_path, callback=None):
         return True
 
 
+def erase_flash():
+    from ..tools import pyserial
+
+    port = pserial.get_serial_port()
+    if(not port):
+        return
+
+    options = ['--port', port, 'erase_flash']
+    run_command(options)
+
+
 def make_folder(folder_path):
     """make foler
 

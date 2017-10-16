@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "UPIOT: Erase Flash", 
+        "command": "upiot_erase_flash"
+    }
+]
