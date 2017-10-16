@@ -63,10 +63,21 @@ class upiotBurnFirmwareCommand(WindowCommand):
         if(not port):
             return
 
-        options.insert(0, "--port " + port)
+        caption = "Do you want to erase the flash memory?"
+        answer = sublime.yes_no_cancel_dialog(caption, "Yes", "No")
+
+        # stop
+        if(answer == sublime.DIALOG_CANCEL):
+            return
 
         # show console
         tools.show_console()
+
+        # erase flash
+        if(answer == sublime.DIALOG_YES):
+            tools.erase_flash()
+
+        options.insert(0, "--port " + port)
 
         if(not pserial.check_port(port)):
             return
