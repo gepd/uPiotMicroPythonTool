@@ -126,4 +126,9 @@ def clean_status():
         ACTIVE_VIEW.erase_status('_upiot_')
 
 
+def show_console():
+    options = {'panel': 'console', 'toggle': True}
+    active_window().run_command('show_panel', options)
+
+
 __version__ = versionize(VERSION)

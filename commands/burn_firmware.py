@@ -66,8 +66,7 @@ class upiotBurnFirmwareCommand(WindowCommand):
         options.insert(0, "--port " + port)
 
         # show console
-        self.window.run_command(
-            'show_panel', {'panel': 'console', 'toggle': True})
+        tools.show_console()
 
         if(not pserial.check_port(port)):
             return
