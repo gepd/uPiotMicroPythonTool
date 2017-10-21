@@ -127,6 +127,30 @@ def make_folder(folder_path):
             pass
 
 
+def find_view(view_name):
+    """
+    Search a specific view in the list of available views
+
+    Arguments:
+        view_name {string}
+            Name of the view to search
+    """
+    opened_view = None
+    found = False
+    fwindows = sublime.windows()
+    for window in fwindows:
+        views = window.views()
+        for view in views:
+            name = view.name()
+            if name == view_name:
+                opened_view = view
+                found = True
+                break
+        if found:
+            break
+    return (window, opened_view)
+
+
 def set_status(text):
     if(ACTIVE_VIEW):
         ACTIVE_VIEW.set_status('_upiot_', text)
