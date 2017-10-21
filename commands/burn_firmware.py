@@ -7,7 +7,7 @@ from os.path import join, basename
 
 from .. import tools
 from ..tools import paths
-from ..tools import pserial
+from ..tools import serial
 
 
 class upiotBurnFirmwareCommand(WindowCommand):
@@ -59,7 +59,7 @@ class upiotBurnFirmwareCommand(WindowCommand):
         options = self.get_board_options('esp32')
         options.append(firmware)
 
-        port = pserial.get_serial_port()
+        port = serial.selected_port()
         if(not port):
             return
 
@@ -79,7 +79,7 @@ class upiotBurnFirmwareCommand(WindowCommand):
 
         options.insert(0, "--port " + port)
 
-        if(not pserial.check_port(port)):
+        if(not serial.check_port(port)):
             return
 
         tools.run_command(options)
