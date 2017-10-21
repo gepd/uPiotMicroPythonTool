@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "UPIOT: Toggle Console", 
+        "command": "upiot_console"
+    }
+]

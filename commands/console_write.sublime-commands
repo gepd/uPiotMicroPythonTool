@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "UPIOT: Write in Console", 
+        "command": "upiot_console_write"
+    }
+]
