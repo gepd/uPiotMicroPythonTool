@@ -2,47 +2,101 @@
 # -*- coding: utf-8 -*-
 
 import sublime
+import collections
+import threading
+
 from .. import tools
 
-view_group = None
+group_index = None
 viewer_name = '$ Micropython Viewer'
 
 
 class Message:
-    output = None
+    BLOCK_SIZE = 2 ** 14
+    text_queue = collections.deque()
+    text_queue_lock = threading.Lock()
 
-    def __init__(self):
-        self.recover_output()
+    def __init__(self, init_text=None):
+        self._init_text = init_text
 
-    def create_panel(self, text=None, direction='down'):
-        """output panel
-
-        Creates a output panel to print messages in file window
+    def create_panel(self, direction='down', extra_name=None):
+        """
+        Start the print module, if the window was already created
+        it's recovered.
         """
         global viewer_name
 
-        window, view = self.get_message_winview()
+        # Update viewer_name with extra info if it exists
+        edit_view_name(extra_name)
 
-        if(not view):
+        # check if the windows was already created
+        self.recover_output()
+
+        if(not hasattr(self, 'output_view')):
             window = sublime.active_window()
 
+            word_wrap = {'setting': 'word_wrap'}
             options = {'direction': direction, 'give_focus': True}
+
             window.run_command('create_pane', options)
 
-            self.output = window.new_file()
-            self.output.set_name(viewer_name)
-            self.output.run_command('toggle_setting', {'setting': 'word_wrap'})
-            self.output.set_scratch(True)
+            self.output_view = window.new_file()
+            self.output_view.set_name(viewer_name)
+            self.output_view.run_command('toggle_setting', word_wrap)
+            self.output_view.set_scratch(True)
 
-            if(text):
-                self.print(text)
-        else:
-            self.recover_output()
+            if(self._init_text):
+                self.print(self._init_text)
+
+    def print(self, text):
+        """
+        Adds the string in the deque list
+        """
+        self.text_queue_lock.acquire()
+        try:
+            self.text_queue.append(text)
+        finally:
+            self.text_queue_lock.release()
+
+        sublime.set_timeout(self.service_text_queue, 0)
+
+    def service_text_queue(self):
+        """
+        Handles the deque list to print the messages
+        """
+        self.text_queue_lock.acquire()
+
+        is_empty = False
+        try:
+            if(len(self.text_queue) == 0):
+                return
+
+            characters = self.text_queue.popleft()
+            is_empty = (len(self.text_queue) == 0)
+
+            self.send_to_file(characters)
+
+        finally:
+            self.text_queue_lock.release()
+
+        if(not is_empty):
+            sublime.set_timeout(self.service_text_queue, 1)
+
+    def send_to_file(self, text):
+        """
+        Prints the text in the window
+        """
+        self.output_view.set_read_only(False)
+        self.output_view.run_command('append', {'characters': text})
+        self.output_view.set_read_only(True)
 
     def recover_output(self):
+        """
+        Recover the message window object
+        """
         window, view = self.get_message_winview()
         if(view):
-            self.output = view
+            self.output_view = view
 
     @staticmethod
     def get_message_winview():
@@ -54,49 +108,25 @@ class Message:
         Returns:
             obj, obj -- window, view
         """
+        global viewer_name
+
         return tools.find_view(viewer_name)
 
-    def is_created(self):
-        """Check viewer panel creation
-
-        Checks if the message viewer windows was already created
-
-        Returns:
-            bool -- True if was created, False if not
-        """
-        window, view = self.get_message_winview()
-        return bool(view)
-
-    def print(self, text):
-        """print message
-
-        Prints the given message in the output panel in a separated
-        thread to avoid block the UI
-
-        Arguments:
-            text {str} -- message to print
-        """
-
-        def block_print():
-            self.output.set_read_only(False)
-            self.output.run_command('append', {'characters': text})
-            self.output.set_read_only(True)
-        sublime.set_timeout_async(block_print, 0)
-
-    def check_message_group():
+    def check_message_group(port):
         """Get message view group
 
         Gets the group number of the message view before close it
         """
-        global view_group
+        global group_index
+        global viewer_name
 
-        window = sublime.active_window()
-        view = window.active_view()
+        # add the port name in the view name
+        edit_view_name(port)
 
-        view_group = None
+        window, view = tools.find_view(viewer_name)
 
         if(view and viewer_name in view.name()):
-            view_group = window.active_group()
+            group_index = window.get_view_index(view)[0]
 
     @staticmethod
     def close_panel():
@@ -105,9 +135,24 @@ class Message:
         Closes the output panel if it's open.
         """
 
-        global view_group
+        global group_index
 
-        if(view_group):
+        if(group_index):
             window = sublime.active_window()
-            window.focus_group(view_group)
+            window.focus_group(group_index)
             window.run_command('destroy_pane', {'direction': 'self'})
+            group_index = None
+
+
+def edit_view_name(text):
+    """Edit viewer name
+
+    Edits the viewer name global var
+
+    Arguments:
+        text {str} -- text to adds in the viewer window name
+    """
+    global viewer_name
+
+    if(text and text not in viewer_name):
+        viewer_name = '{} | {}'.format(viewer_name, text)
