@@ -95,9 +95,9 @@ def download_file(file_url, dst_path, callback=None):
 
 
 def erase_flash():
-    from ..tools import pyserial
+    from ..tools import serial
 
-    port = pserial.get_serial_port()
+    port = serial.selected_port()
     if(not port):
         return
 

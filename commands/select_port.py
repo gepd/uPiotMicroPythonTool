@@ -2,7 +2,7 @@ import sublime
 from sublime_plugin import WindowCommand
 
 from .. import tools
-from ..tools.pserial import ports_list
+from ..tools.serial import ports_list
 
 setting_key = 'serial_port'
 
