@@ -14,6 +14,7 @@ __all__ = [
     'upiotEraseFlashCommand'
     'upiotPutCurrentFileCommand',
     'upiotMakeFolderCommand',
+    'upiotRunCurrentFileCommand',
     'upiotConsoleCommand',
     'upiotConsoleWriteCommand'
 ]

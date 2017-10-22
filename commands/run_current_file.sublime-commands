@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "UPIOT: Run Current File", 
+        "command": "upiot_run_current_file"
+    }
+]
