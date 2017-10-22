@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "UPIOT: Remove Folder", 
+        "command": "upiot_remove_folder"
+    }
+]
