@@ -2,12 +2,13 @@ import sublime
 from sublime_plugin import WindowCommand
 
 from ..tools import __version__
-from ..tools.message import Message
+from ..tools import message
 from ..tools import serial
 
 
 class upiotConsoleCommand(WindowCommand):
     port = None
+    txt = None
 
     def run(self):
         """Open/Stop serial console
@@ -15,15 +16,27 @@ class upiotConsoleCommand(WindowCommand):
         Opens the serial console in a new window or if it's already open,
         closes the connection to this, it wont close the message window.
         """
-        self.port = serial.selected_port()
+        txt = "uPIOT v{0}\nHelp, suggestion or error reports in\n" \
+            "https: www.github.com/gepd/upiot\n===" \
+            "".format(__version__)
 
-        if(self.port in serial.in_use):
-            serial.serial_dict[self.port].close()
+        direction = 'self' if(self.check_empty_panel()) else 'down'
+
+        # check the port selected
+        self.port = serial.selected_port(request_port=True)
+
+        if(not self.port):
             return
 
-        sublime.set_timeout_async(self.open_console)
+        # create and open the console window
+        self.txt = message.Message(txt)
+        if(not self.txt.recover_panel(self.port)):
+            self.txt.create_panel(direction, extra_name=self.port)
 
-        self.window.run_command('upiot_console_write')
+        sublime.set_timeout_async(self.wait_console)
+
+        # opens the console window
+        sublime.active_window().run_command('upiot_console_write')
 
     def check_empty_panel(self):
         """
@@ -40,24 +53,14 @@ class upiotConsoleCommand(WindowCommand):
                 return True
         return False
 
-    def open_console(self):
+    def wait_console(self):
         """Open serial console
 
         Opens a panel (new file) and starts a serial connection in the selected
         port and show the data received in human readable format.
         """
-        txt = "uPIOT v{0}\nHelp, suggestion ir error reports in\n" \
-            "https: www.github.com/gepd/upiot\n===\n\n" \
-            "".format(__version__)
 
-        direction = 'self' if(self.check_empty_panel()) else 'down'
-
-        message = Message(txt)
-        message.create_panel(direction, extra_name=self.port)
-
-        serial_o = serial.Serial(port=self.port, baudrate=115200)
-        serial_o.open()
-
-        while(serial_o.is_running()):
-            data = serial_o.readable()
-            message.print(data)
+        # Serial port connection
+        link = serial.Serial(port=self.port, baudrate=115200)
+        link.open()
+        link.keep_listen(self.txt.print)
