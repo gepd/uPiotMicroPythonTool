@@ -8,6 +8,6 @@ class upiotEraseFlashCommand(WindowCommand):
 
     def run(self):
         # show console
-        show_console()
+        tools.show_console()
 
         sublime.set_timeout_async(tools.erase_flash, 0)
