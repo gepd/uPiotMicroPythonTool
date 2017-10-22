@@ -21,17 +21,6 @@ def run_command(command, cwd=None):
         if output:
             print(output)
 
-    """
-    # return code and stdout
-    output = process.communicate()
-    stdout = output[0]
-    return_code = process.returncode
-
-    print(output)
-    print(stdout)
-    print(return_code)
-    """
-
 
 def prepare_command(options):
     esptool = paths.esptool_file()
