@@ -13,7 +13,7 @@ class upiotSelectPortCommand(WindowCommand):
     def run(self):
         self.items = ports_list()
         if(not self.items):
-            self.items = ['No serial port was found']
+            self.items = ['No device found']
         tools.quick_panel(self.items, self.callback)
 
     def callback(self, selection):
