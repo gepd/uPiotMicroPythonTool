@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "UPIOT: Sync Files From Device", 
+        "command": "upiot_retrieve_all_files"
+    }
+]

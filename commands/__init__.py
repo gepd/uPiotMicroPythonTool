@@ -2,6 +2,7 @@ from .burn_firmware import upiotBurnFirmwareCommand
 from .download_firmware import upiotDownloadFirmwareCommand
 from .select_port import upiotSelectPortCommand
 from .erase_flash import upiotEraseFlashCommand
+from .retrieve_all_files import upiotRetrieveAllFilesCommand
 from .put_file import upiotPutFileCommand
 from .remove_file import upiotRemoveFileCommand
 from .make_folder import upiotMakeFolderCommand
@@ -15,6 +16,7 @@ __all__ = [
     'upiotDownloadFirmwareCommand',
     'upiotSelectPortCommand',
     'upiotEraseFlashCommand'
+    'upiotRetrieveAllFilesCommand',
     'upiotPutFileCommand',
     'upiotRemoveFileCommand',
     'upiotPutCurrentFileCommand',
