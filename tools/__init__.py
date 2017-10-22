@@ -169,6 +169,28 @@ def recover_console():
             link.keep_listen(txt.print)
         Thread(target=listen_port).start()
 
+
+def check_sidebar_folder(folder):
+    """check folder in sidebar
+
+    Checks if the given folder already is in the current project
+
+    Arguments:
+        folder {str} -- folder to search
+
+    Returns:
+        bool -- true if already is false if not
+    """
+    data = sublime.active_window().project_data()
+    if(not data):
+        return False
+    else:
+        paths = [path['path'] for path in data["folders"]]
+        if(folder in paths):
+            return True
+        return False
+
+
 def set_status(text):
     if(ACTIVE_VIEW):
         ACTIVE_VIEW.set_status('_upiot_', text)
