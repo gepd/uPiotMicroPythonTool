@@ -14,7 +14,7 @@ setting_key = 'serial_ports'
 
 class Serial:
 
-    def __init__(self, port, baudrate, timeout=1):
+    def __init__(self, port, baudrate=115200, timeout=1):
         self._serial = pyserial.Serial()
         self._serial.port = port
         self._serial.baudrate = baudrate
