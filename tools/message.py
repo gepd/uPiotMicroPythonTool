@@ -2,16 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import sublime
+from sublime_plugin import EventListener
+
 import collections
 import threading
 
 from .. import tools
 
+session = None
 group_index = None
 viewer_name = '$ Micropython Viewer'
 
 
-class Message:
+class Message(EventListener):
     BLOCK_SIZE = 2 ** 14
     text_queue = collections.deque()
     text_queue_lock = threading.Lock()
@@ -24,29 +27,22 @@ class Message:
         Start the print module, if the window was already created
         it's recovered.
         """
+        global session
         global viewer_name
 
         # Update viewer_name with extra info if it exists
         edit_view_name(extra_name)
 
         # check if the windows was already created
-        self.recover_output()
+        # self.recover_output()
 
-        if(not hasattr(self, 'output_view')):
-            window = sublime.active_window()
+        self.output_view = new_file_panel(direction)
 
-            word_wrap = {'setting': 'word_wrap'}
-            options = {'direction': direction, 'give_focus': True}
+        # print initial message
+        if(self._init_text):
+            self.print(self._init_text)
 
-            window.run_command('create_pane', options)
-
-            self.output_view = window.new_file()
-            self.output_view.set_name(viewer_name)
-            self.output_view.run_command('toggle_setting', word_wrap)
-            self.output_view.set_scratch(True)
-
-            if(self._init_text):
-                self.print(self._init_text)
+        session = self
 
     def print(self, text):
         """
@@ -90,13 +86,22 @@ class Message:
         self.output_view.run_command('append', {'characters': text})
         self.output_view.set_read_only(True)
 
-    def recover_output(self):
+    def recover_panel(self, port):
         """
         Recover the message window object
         """
+        global session
+
+        edit_view_name(port)
+
         window, view = self.get_message_winview()
+
         if(view):
             self.output_view = view
+
+            session = self
+            return True
+        return False
 
     @staticmethod
     def get_message_winview():
@@ -143,11 +148,49 @@ class Message:
             window.run_command('destroy_pane', {'direction': 'self'})
             group_index = None
 
+    def on_pre_close(self, view):
+        """
+        Get the group number before close a window
+        """
+        global group_index
+
+        window = sublime.active_window()
+        group_index = window.get_view_index(view)[0]
+
+    def on_close(self, view):
+        global session
+        global group_index
+        global viewer_name
+
+        if(group_index and viewer_name in view.name()):
+            window = sublime.active_window()
+            window.focus_group(group_index)
+            window.run_command('destroy_pane', {'direction': 'self'})
+            session = None
+
+        group_index = None
+
+
+def new_file_panel(direction):
+    window = sublime.active_window()
+
+    word_wrap = {'setting': 'word_wrap'}
+    options = {'direction': direction, 'give_focus': True}
+
+    window.run_command('create_pane', options)
+
+    view = window.new_file()
+    view.set_name(viewer_name)
+    view.run_command('toggle_setting', word_wrap)
+    view.set_scratch(True)
+
+    return view
+
 
 def edit_view_name(text):
     """Edit viewer name
 
-    Edits the viewer name global var
+    Edits the viewer name global vtar
 
     Arguments:
         text {str} -- text to adds in the viewer window name
