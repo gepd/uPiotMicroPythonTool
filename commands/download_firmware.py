@@ -40,6 +40,12 @@ class upiotDownloadFirmwareCommand(WindowCommand):
         if(out):
             tools.set_status('Download success')
         else:
+            from os import path, remove
+
+            filename = self.url.split('/')[-1]
+            dst_path = path.join(folder, filename)
+            remove(dst_path)
+
             tools.set_status('Error downloading')
 
         sublime.set_timeout_async(tools.clean_status, 2000)

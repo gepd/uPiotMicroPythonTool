@@ -73,7 +73,11 @@ def download_file(file_url, dst_path, callback=None):
         return True
 
     with open(dst_path, 'wb') as file:
-        req = requests.get(file_url, stream=True, headers=headers)
+        try:
+            req = requests.get(file_url, stream=True, headers=headers)
+        except:
+            return False
+
         total_length = req.headers.get('content-length')
 
         # File status
