@@ -1,6 +1,6 @@
 [
 	{
-        "caption": "UPIOT: Toggle Console", 
+        "caption": "UPIOT: Open Console", 
         "command": "upiot_console"
     }
 ]
