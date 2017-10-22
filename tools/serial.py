@@ -168,13 +168,18 @@ def check_port(port):
     return True
 
 
-def selected_port():
+def selected_port(request_port=False):
     """Get serial port
 
     If there is only one port available, it will be automatically used,
     even if it is not in the preferences, if there is more than one port,
     the user selection will be used, if not setting stored or it's outdated
     one, the user will prompted to select one.
+
+    Keyword Arguments:
+        request_port {bool} -- True: show the quick panel to select a port if
+                        there no selection or the selected one is not avaialble
+                        anymore (default: {False})
 
     Returns:
         str -- selected port, false with any problem
@@ -194,10 +199,12 @@ def selected_port():
     elif(ports and len(ports) == 0):
         return False
     elif(not port_setting):
-        sublime.active_window().run_command('upiot_select_port')
+        if(request_port):
+            sublime.active_window().run_command('upiot_select_port')
         return False
     elif(port_setting not in ports):
-        sublime.active_window().run_command('select_port')
+        if(request_port):
+            sublime.active_window().run_command('upiot_select_port')
         return False
 
     return port_setting
