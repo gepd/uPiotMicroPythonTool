@@ -103,6 +103,20 @@ class Serial:
 
         return self._serial.write(data)
 
+    def keep_listen(self, printer):
+        """Listen port
+
+        Listen for new data in the selected port
+
+        Arguments:
+            printer {obj} -- function or method to print the data
+        """
+        while(self.is_running()):
+            data = self.readable()
+            if(not printer):
+                break
+            printer(data)
+
     def close(self):
         """Close serial connection
 
