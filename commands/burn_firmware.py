@@ -14,6 +14,7 @@ from ..tools import serial
 
 
 class upiotBurnFirmwareCommand(WindowCommand):
+    port = None
     items = None
     firmwares = None
     url = None
@@ -22,6 +23,10 @@ class upiotBurnFirmwareCommand(WindowCommand):
         self.items = []
         self.firmwares = paths.firmware_folder('esp32')
         self.firmware_list()
+
+        self.port = serial.selected_port(request_port=True)
+        if(not self.port):
+            return
 
         tools.quick_panel(self.items, self.callback_selection)
 
@@ -62,10 +67,6 @@ class upiotBurnFirmwareCommand(WindowCommand):
         options = self.get_board_options('esp32')
         options.append(firmware)
 
-        port = serial.selected_port()
-        if(not port):
-            return
-
         caption = "Do you want to erase the flash memory?"
         answer = sublime.yes_no_cancel_dialog(caption, "Yes", "No")
 
@@ -80,9 +81,9 @@ class upiotBurnFirmwareCommand(WindowCommand):
         if(answer == sublime.DIALOG_YES):
             tools.erase_flash()
 
-        options.insert(0, "--port " + port)
+        options.insert(0, "--port " + self.port)
 
-        if(not serial.check_port(port)):
+        if(not serial.check_port(self.port)):
             return
 
         tools.run_command(options)
