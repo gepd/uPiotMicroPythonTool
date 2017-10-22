@@ -151,6 +151,24 @@ def find_view(view_name):
     return (window, opened_view)
 
 
+def recover_console():
+    """Auto start open console
+
+    If there is an open console it will re-connect to the selected port
+    automatically if the device is available
+    """
+    from threading import Thread
+    from ..tools import serial, message
+
+    port = serial.selected_port()
+    if(message.Message().recover_panel(port)):
+        def listen_port():
+            txt = message.session
+            link = serial.Serial(port=port)
+            link.open()
+            link.keep_listen(txt.print)
+        Thread(target=listen_port).start()
+
 def set_status(text):
     if(ACTIVE_VIEW):
         ACTIVE_VIEW.set_status('_upiot_', text)
