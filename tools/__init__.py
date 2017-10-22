@@ -1,8 +1,10 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
+import sublime
+from sublime_plugin import WindowCommand
+
 from .. import requests
 from os import path, makedirs
-from sublime import version, active_window
 
 from ..tools.boards import get_boards_list
 from ..tools.command import run_command
@@ -41,7 +43,8 @@ def get_headers():
     headers for urllib request
     """
 
-    user_agent = 'uPIOT/{0} (Sublime-Text/{1})'.format(__version__, version())
+    user_agent = 'uPIOT/{0} (Sublime-Text/{1})'.format(__version__,
+                                                       sublime.version())
     headers = {'User-Agent': user_agent}
     return headers
 
@@ -95,13 +98,17 @@ def download_file(file_url, dst_path, callback=None):
 
 
 def erase_flash():
+    """Erase flash memory
+
+    Erase the flash memory from the current selected device
+    """
     from ..tools import serial
 
     port = serial.selected_port()
     if(not port):
         return
 
-    options = ['--port', port, 'erase_flash']
+    options = ['esptool', '--port', port, 'erase_flash']
     run_command(options)
 
 
@@ -192,18 +199,32 @@ def check_sidebar_folder(folder):
 
 
 def set_status(text):
+    """Set the status bar
+
+    Sets a message/text in the status bar
+
+    Arguments:
+        text {str} -- text to add
+    """
     if(ACTIVE_VIEW):
         ACTIVE_VIEW.set_status('_upiot_', text)
 
 
 def clean_status():
+    """Remove status bar text
+
+    Removes the status bar text related to the plugin
+    """
     if(ACTIVE_VIEW):
         ACTIVE_VIEW.erase_status('_upiot_')
 
 
 def show_console():
-    options = {'panel': 'console', 'toggle': True}
-    active_window().run_command('show_panel', options)
+    """Open ST console
 
+    Opens the Sublime Text console
+    """
+    options = {'panel': 'console', 'toggle': True}
+    sublime.active_window().run_command('show_panel', options)
 
 __version__ = versionize(VERSION)
