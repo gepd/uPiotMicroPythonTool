@@ -12,6 +12,10 @@ class upiotConsoleWriteCommand(WindowCommand):
 
     def callback(self, data):
 
+        port = serial.selected_port(request_port=True)
+        if(not port):
+            return
+
         if(data.startswith('sampy')):
             data = data.split()
             cmd = data[1]
@@ -22,8 +26,6 @@ class upiotConsoleWriteCommand(WindowCommand):
 
             self.window.run_command('upiot_console_write')
             return
-
-        port = serial.selected_port()
 
         if(port in serial.in_use):
             link = serial.serial_dict[port]
