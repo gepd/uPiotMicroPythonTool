@@ -31,4 +31,4 @@ class upiotSelectPortCommand(WindowCommand):
 
         settings = sublime.load_settings(tools.SETTINGS_NAME)
         settings.set(setting_key, port)
-        sublime.save_sttings(tools.SETTINGS_NAME)
+        sublime.save_settings(tools.SETTINGS_NAME)
