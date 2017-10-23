@@ -93,6 +93,7 @@ def run_file(filepath):
 
 
 def list_files():
+
     sampy = start_sampy()
 
     txt.print('\n\n>> sampy ls\n')
@@ -173,10 +174,10 @@ def put_file(filepath):
     Arguments:
         filepath {str} -- path of the file to put
     """
+    sampy = start_sampy()
+
     file = path.basename(filepath)
     txt.print('\n\n>> putting {0}'.format(file))
-
-    sampy = start_sampy()
 
     try:
         sampy.put(path.normpath(filepath))
@@ -197,10 +198,10 @@ def remove_file(filepath):
     Arguments:
         filepath {str} -- file to remove
     """
+    sampy = start_sampy()
+
     file = path.basename(filepath)
     txt.print('\n\n>> remove {0}'.format(file))
-
-    sampy = start_sampy()
 
     try:
         sampy.rm(filepath)
@@ -221,9 +222,9 @@ def make_folder(folder_name):
     Arguments:
         folder_name {str} -- folder name
     """
-    txt.print('\n\n>> creating {0}'.format(folder_name))
-
     sampy = start_sampy()
+
+    txt.print('\n\n>> creating {0}'.format(folder_name))
 
     try:
         sampy.mkdir(folder_name)
@@ -244,9 +245,9 @@ def remove_folder(folder_name):
     Arguments:
         folder_name {str} -- folder to remvoe
     """
-    txt.print('\n\n>> Removing {0}'.format(folder_name))
-
     sampy = start_sampy()
+
+    txt.print('\n\n>> Removing {0}'.format(folder_name))
 
     try:
         sampy.rmdir(folder_name)
