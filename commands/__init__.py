@@ -12,11 +12,13 @@ from .remove_folder import upiotRemoveFolderCommand
 from .run_current_file import upiotRunCurrentFileCommand
 from .console import upiotConsoleCommand
 from .console_write import upiotConsoleWriteCommand
+from .select_board import upiotSelectBoardCommand
 
 __all__ = [
     'upiotBurnFirmwareCommand',
     'upiotDownloadFirmwareCommand',
     'upiotSelectPortCommand',
+    'upiotSelectBoardCommand',
     'upiotEraseFlashCommand',
     'upiotRetrieveAllFilesCommand',
     'upiotAddProjectCommand',
