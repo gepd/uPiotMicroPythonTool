@@ -2,11 +2,16 @@ import sublime
 from sublime_plugin import WindowCommand
 
 from ..tools import ampy_manager
+from ..tools.serial import selected_port
 
 
 class upiotPutCurrentFileCommand(WindowCommand):
 
     def run(self):
+        port = selected_port(request_port=True)
+        if(not port):
+            return
+
         file = self.window.active_view().file_name()
 
         def put_file():
