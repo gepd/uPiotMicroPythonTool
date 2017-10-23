@@ -5,7 +5,7 @@ from glob import glob
 from ..tools import paths
 
 
-def get_boards_list():
+def boards_list():
     """List of boards
 
     Get a list of boards based in the json files located

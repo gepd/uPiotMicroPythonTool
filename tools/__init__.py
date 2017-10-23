@@ -6,7 +6,7 @@ from sublime_plugin import WindowCommand
 from .. import requests
 from os import path, makedirs
 
-from ..tools.boards import get_boards_list
+from ..tools.boards import boards_list
 from ..tools.command import run_command
 from ..tools.quick_panel import quick_panel
 
@@ -33,7 +33,7 @@ def versionize(raw_version):
         version += raw_version[3]
     return version
 
-__all__ = ["get_boards_list",
+__all__ = ["boards_list",
            "run_command",
            "quick_panel"]
 
