@@ -3,11 +3,6 @@
 from .commands import *
 from sublime_plugin import EventListener
 from .tools import serial
-from .tools import recover_console
-
-
-def plugin_loaded():
-    recover_console()
 
 
 class uPiotListener(EventListener):
