@@ -133,7 +133,7 @@ class Serial:
         del serial_dict[port]
 
 
-def establish_connection(port, printer_callback):
+def establish_connection(port):
     """establish serial connection and listen
 
     Establishs a connection in the given port and if the printer_callback is
@@ -141,12 +141,22 @@ def establish_connection(port, printer_callback):
 
     Arguments:
         port {str} -- port name to make the connection
-        printer_callback {obj} -- method/function to print the received data
     """
-    link = Serial(port)
+    from ..tools import message
+    from threading import Thread
+
+    try:
+        link = serial_dict[port]
+    except:
+        link = Serial(port)
+
+    if(link.is_running()):
+        return
+
+    txt = message.open(port)
     link.open()
-    if(printer_callback):
-        link.keep_listen(printer_callback)
+
+    Thread(target=link.keep_listen, args=(txt.print,)).start()
 
 
 def ports_list():
