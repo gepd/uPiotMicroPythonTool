@@ -112,9 +112,16 @@ class Serial:
             printer {obj} -- function or method to print the data
         """
         while(self.is_running()):
-            data = self.readable()
+            try:
+                data = self.readable()
+            except pyserial.serialutil.SerialException:
+                self.close()
+                printer("SerialError: device disconected")
+                break
+
             if(not printer):
                 break
+
             printer(data)
 
     def close(self):
