@@ -172,7 +172,73 @@ class Message(EventListener):
         group_index = None
 
 
+def open(port):
+    """Start the message deque
+
+    If there is a panel already opened in ST and the device is connected, it
+    will recover the session and start the printer in that window otherwise
+    will create a new panel and return the message instance
+
+    Arguments:
+        port {str} -- port to open
+
+    Returns:
+        obj -- Message class instance
+    """
+    if(Message().recover_panel(port)):
+        txt = session
+    else:
+        from ..tools import __version__
+
+        head = """
+            *******************************
+               UPIOT v{} uPython Tool
+            *******************************
+
+            Use --help to get a list of the available commands.
+
+            https://github.com/gepd/upiot for help, suggetions or bug report.
+            ---
+            """.replace('    ', '').format(__version__)
+
+        direction = 'self' if(check_empty_panel()) else 'down'
+
+        txt = Message(head)
+        txt.create_panel(direction=direction, extra_name=port)
+    return txt
+
+
+def check_empty_panel():
+    """
+    If there is an empty panel will make it active
+
+    Returns:
+        bool -- True if there is an empty panel false if not
+    """
+    from sublime import active_window
+
+    window = active_window()
+    num = window.num_groups()
+
+    for n in range(0, num):
+        if(not window.views_in_group(n)):
+            window.focus_group(n)
+            return True
+    return False
+
+
 def new_file_panel(direction):
+    """Create an empty new file sheet
+
+    Creates an empty sheet to be used as console
+
+    Arguments:
+        direction {str} -- Where the window will be located. options available:
+                            'self', 'left', 'right', 'up', 'down'
+
+    Returns:
+        obj -- Sublime Text view buffer
+    """
     window = sublime.active_window()
 
     word_wrap = {'setting': 'word_wrap'}
