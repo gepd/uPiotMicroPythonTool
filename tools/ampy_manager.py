@@ -70,8 +70,9 @@ def run_file(filepath):
     try:
         output = sampy.run(filepath)
         output = output.replace('\r\n', '\n').rstrip()
+    except FileNotFoundError as e:
+        output = str(e)
     except pyboard.PyboardError as e:
-        print(str(e))
         output = ""
         # get error
         output = str(e)
@@ -93,7 +94,10 @@ def run_file(filepath):
 
 
 def list_files():
+    """List of files in device
 
+    Shows the list of files (and folders) from the selected device
+    """
     sampy = start_sampy()
 
     txt.print('\n\n>> sampy ls\n')
@@ -107,10 +111,21 @@ def list_files():
 
 
 def get_file(filename):
+    """Get file from device
+
+    Gets the given file from the selected device
+
+    Arguments:
+        filename {str} -- name of the file
+    """
     sampy = start_sampy()
 
     txt.print('\n\n>> get {0}'.format(filename))
-    output = sampy.get(filename)
+    try:
+        output = sampy.get(filename)
+    except RuntimeError as e:
+        output = str(e)
+
     output = output.replace('\r\n', '\n').replace('\r', '\n')
 
     txt.print('\n\n' + output)
@@ -177,13 +192,15 @@ def put_file(filepath):
     sampy = start_sampy()
 
     file = path.basename(filepath)
-    txt.print('\n\n>> putting {0}'.format(file))
+    txt.print('\n\n>> put {0}'.format(file))
 
     try:
         sampy.put(path.normpath(filepath))
         txt.print('\n\ndone')
-    except:
-        pass
+    except FileNotFoundError as e:
+        output = str(e)
+
+    txt.print('\n\n' + output)
 
     sampy.close()
 
@@ -201,13 +218,15 @@ def remove_file(filepath):
     sampy = start_sampy()
 
     file = path.basename(filepath)
-    txt.print('\n\n>> remove {0}'.format(file))
+    txt.print('\n\n>> rm {0}'.format(file))
 
     try:
         sampy.rm(filepath)
         txt.print('\n\ndone')
-    except:
-        txt.print("\n\nerror removing file")
+    except RuntimeError as e:
+        output = str(e)
+
+    txt.print('\n\n' + output)
 
     sampy.close()
 
@@ -224,13 +243,15 @@ def make_folder(folder_name):
     """
     sampy = start_sampy()
 
-    txt.print('\n\n>> creating {0}'.format(folder_name))
+    txt.print('\n\n>> mkdir {0}'.format(folder_name))
 
     try:
         sampy.mkdir(folder_name)
         txt.print('\n\ndone')
-    except files.DirectoryExistsError:
-        txt.print("\n\nFolder already exists")
+    except files.DirectoryExistsError as e:
+        output = str(e)
+
+    txt.print('\n\n' + output)
 
     sampy.close()
 
@@ -247,14 +268,15 @@ def remove_folder(folder_name):
     """
     sampy = start_sampy()
 
-    txt.print('\n\n>> Removing {0}'.format(folder_name))
+    txt.print('\n\n>> rmdir {0}'.format(folder_name))
 
     try:
         sampy.rmdir(folder_name)
         txt.print('\n\ndone')
     except RuntimeError as e:
-        if('No such directory' in str(e)):
-            txt.print("\n\nFolder no found")
+        output = str(e)
+
+    txt.print('\n\n' + output)
 
     sampy.close()
 
