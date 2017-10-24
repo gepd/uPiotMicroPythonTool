@@ -12,6 +12,8 @@ from .. import tools
 from ..tools import paths
 from ..tools import serial
 
+setting_key = 'board'
+
 
 class upiotBurnFirmwareCommand(WindowCommand):
     port = None
@@ -19,14 +21,23 @@ class upiotBurnFirmwareCommand(WindowCommand):
     firmwares = None
     url = None
 
-    def run(self):
-        self.items = []
-        self.firmwares = paths.firmware_folder('esp32')
-        self.firmware_list()
-
+    def run(self, selected=None):
+        # only continue if a device is available
         self.port = serial.selected_port(request_port=True)
         if(not self.port):
             return
+
+        self.items = []
+
+        settings = sublime.load_settings(tools.SETTINGS_NAME)
+        board = settings.get(setting_key, None)
+
+        if(not selected):
+            sublime.active_window().run_command('upiot_select_board')
+            return
+
+        self.firmwares = paths.firmware_folder(board)
+        self.firmware_list()
 
         tools.quick_panel(self.items, self.callback_selection)
 
