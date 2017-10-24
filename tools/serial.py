@@ -133,6 +133,22 @@ class Serial:
         del serial_dict[port]
 
 
+def establish_connection(port, printer_callback):
+    """establish serial connection and listen
+
+    Establishs a connection in the given port and if the printer_callback is
+    given, calls to keep_listen to receive new data from the port
+
+    Arguments:
+        port {str} -- port name to make the connection
+        printer_callback {obj} -- method/function to print the received data
+    """
+    link = Serial(port)
+    link.open()
+    if(printer_callback):
+        link.keep_listen(printer_callback)
+
+
 def ports_list():
     """List of serial ports
 

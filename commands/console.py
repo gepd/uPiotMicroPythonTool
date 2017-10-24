@@ -61,6 +61,4 @@ class upiotConsoleCommand(WindowCommand):
         """
 
         # Serial port connection
-        link = serial.Serial(port=self.port, baudrate=115200)
-        link.open()
-        link.keep_listen(self.txt.print)
+        serial.establish_connection(self.port, self.txt.print)
