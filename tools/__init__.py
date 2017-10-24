@@ -153,7 +153,7 @@ def find_view(view_name):
         views = window.views()
         for view in views:
             name = view.name()
-            if name == view_name:
+            if(view_name in name):
                 opened_view = view
                 found = True
                 break
