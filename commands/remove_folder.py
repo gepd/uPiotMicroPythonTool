@@ -1,7 +1,7 @@
 import sublime
 from sublime_plugin import WindowCommand
 
-from ..tools import ampy_manager
+from ..tools import sampy_manager
 from ..tools.serial import selected_port
 
 
@@ -16,5 +16,5 @@ class upiotRemoveFolderCommand(WindowCommand):
 
     def callback(self, folder):
         def remove_folder():
-            ampy_manager.remove_folder(folder)
+            sampy_manager.remove_folder(folder)
         sublime.set_timeout_async(remove_folder, 0)

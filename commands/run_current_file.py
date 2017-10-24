@@ -1,7 +1,7 @@
 import sublime
 from sublime_plugin import WindowCommand
 
-from ..tools import ampy_manager
+from ..tools import sampy_manager
 from ..tools import message
 from threading import Thread
 from ..tools.serial import selected_port
@@ -23,4 +23,4 @@ class upiotRunCurrentFileCommand(WindowCommand):
         if(view.is_dirty()):
             view.run_command('save')
 
-        Thread(target=ampy_manager.run_file, args=(file,)).start()
+        Thread(target=sampy_manager.run_file, args=(file,)).start()

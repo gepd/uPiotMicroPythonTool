@@ -1,7 +1,7 @@
 import sublime
 from sublime_plugin import WindowCommand
 from threading import Thread
-from ..tools import ampy_manager
+from ..tools import sampy_manager
 from ..tools.serial import selected_port
 
 
@@ -16,4 +16,4 @@ class upiotRetrieveAllFilesCommand(WindowCommand):
             'Destination:', '', self.callback, None, None)
 
     def callback(self, path):
-        Thread(target=ampy_manager.get_files, args=(path,)).start()
+        Thread(target=sampy_manager.get_files, args=(path,)).start()

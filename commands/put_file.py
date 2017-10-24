@@ -1,7 +1,7 @@
 import sublime
 from sublime_plugin import WindowCommand
 
-from ..tools import ampy_manager
+from ..tools import sampy_manager
 from ..tools.serial import selected_port
 
 
@@ -16,6 +16,6 @@ class upiotPutFileCommand(WindowCommand):
 
     def callback(self, file):
         def put_file():
-            ampy_manager.put_file(file)
+            sampy_manager.put_file(file)
 
         sublime.set_timeout_async(put_file, 0)

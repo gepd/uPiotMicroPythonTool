@@ -34,17 +34,17 @@ class upiotConsoleWriteCommand(WindowCommand):
             self.window.run_command('upiot_console_write')
 
     def sampy_commands(self, option, arg=None):
-        from ..tools import ampy_manager
+        from ..tools import sampy_manager
 
         commands = {}
 
-        commands['ls'] = ampy_manager.list_files
-        commands['run'] = ampy_manager.run_file
-        commands['get'] = ampy_manager.get_file
-        commands['put'] = ampy_manager.put_file
-        commands['rm'] = ampy_manager.remove_file
-        commands['mkdir'] = ampy_manager.make_folder
-        commands['rmdir'] = ampy_manager.remove_folder
+        commands['ls'] = sampy_manager.list_files
+        commands['run'] = sampy_manager.run_file
+        commands['get'] = sampy_manager.get_file
+        commands['put'] = sampy_manager.put_file
+        commands['rm'] = sampy_manager.remove_file
+        commands['mkdir'] = sampy_manager.make_folder
+        commands['rmdir'] = sampy_manager.remove_folder
 
         try:
             commands[option]()
