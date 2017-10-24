@@ -108,7 +108,7 @@ def erase_flash():
     """
     from ..tools import serial
 
-    port = serial.selected_port()
+    port = serial.selected_port(request_port=True)
     if(not port):
         return
 
