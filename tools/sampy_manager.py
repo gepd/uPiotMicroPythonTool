@@ -30,11 +30,7 @@ def start_sampy():
         run_serial.close()
 
     # message printer
-    if(message.session):
-        txt = message.session
-    else:
-        if(message.Message().recover_panel(port)):
-            txt = message.session
+    txt = message.open(port)
 
     return Sampy(port)
 
@@ -49,6 +45,9 @@ def finished_action():
     if(run_serial):
         run_serial.open()
         run_serial.keep_listen(txt.print)
+
+    # opens the console window
+    sublime.active_window().run_command('upiot_console_write')
 
 
 def run_file(filepath):
@@ -196,7 +195,7 @@ def put_file(filepath):
 
     try:
         sampy.put(path.normpath(filepath))
-        txt.print('\n\ndone')
+        output = 'done'
     except FileNotFoundError as e:
         output = str(e)
 
@@ -222,7 +221,7 @@ def remove_file(filepath):
 
     try:
         sampy.rm(filepath)
-        txt.print('\n\ndone')
+        output = 'done'
     except RuntimeError as e:
         output = str(e)
 
@@ -247,7 +246,7 @@ def make_folder(folder_name):
 
     try:
         sampy.mkdir(folder_name)
-        txt.print('\n\ndone')
+        output = 'done'
     except files.DirectoryExistsError as e:
         output = str(e)
 
@@ -272,7 +271,7 @@ def remove_folder(folder_name):
 
     try:
         sampy.rmdir(folder_name)
-        txt.print('\n\ndone')
+        output = 'done'
     except RuntimeError as e:
         output = str(e)
 
