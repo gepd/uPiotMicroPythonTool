@@ -192,7 +192,7 @@ def open(port):
 
         head = """
             *******************************
-               UPIOT v{} uPython Tool
+            UPIOT v{} uPython Tool
             *******************************
 
             Use --help to get a list of the available commands.
