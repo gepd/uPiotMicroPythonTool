@@ -1,7 +1,7 @@
 import sublime
 
 from os import path, mkdir
-from ..tools import check_sidebar_folder
+from ..tools import check_sidebar_folder, make_folder as mkfolder
 from ..tools import message
 from ..tools.sampy import Sampy
 from ..tools import serial
@@ -143,6 +143,7 @@ def get_files(destination):
     sampy = start_sampy()
 
     destination = path.normpath(destination)
+    mkfolder(destination)
 
     txt.print('\n\n>> get from device to {0}'.format(destination))
 
