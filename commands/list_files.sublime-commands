@@ -1,0 +1,6 @@
+[
+	{
+        "caption": "UPIOT: List Files in Device", 
+        "command": "upiot_list_files"
+    }
+]
