@@ -8,7 +8,7 @@ from ..tools import serial
 from ..tools.ampy import files, pyboard
 
 txt = None
-run_serial = None
+port = None
 
 
 def start_sampy():
@@ -20,7 +20,7 @@ def start_sampy():
         Sampy -- Sampy object
     """
     global txt
-    global run_serial
+    global port
 
     port = serial.selected_port()
 
@@ -40,11 +40,9 @@ def finished_action():
     This function will be called after an action is finished, and will
     re-open the serial connection if was open.
     """
-    global run_serial
+    global port
 
-    if(run_serial):
-        run_serial.open()
-        run_serial.keep_listen(txt.print)
+    serial.establish_connection(port)
 
     # opens the console window
     sublime.active_window().run_command('upiot_console_write')
