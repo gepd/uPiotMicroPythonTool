@@ -9,7 +9,7 @@ class upiotConsoleWriteCommand(WindowCommand):
     port = None
 
     def run(self):
-        self.window.show_input_panel('>>', '', self.callback, None, None)
+        self.window.show_input_panel('>>>', '', self.callback, None, None)
 
     def callback(self, data):
         """Console write callback
