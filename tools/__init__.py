@@ -228,13 +228,4 @@ def clean_status():
     if(ACTIVE_VIEW):
         ACTIVE_VIEW.erase_status('_upiot_')
 
-
-def show_console():
-    """Open ST console
-
-    Opens the Sublime Text console
-    """
-    options = {'panel': 'console', 'toggle': True}
-    sublime.active_window().run_command('show_panel', options)
-
 __version__ = versionize(VERSION)
