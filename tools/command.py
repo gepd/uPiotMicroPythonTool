@@ -1,6 +1,3 @@
-# !/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # This file is part of the uPiot project, https://github.com/gepd/upiot/
 #
 # MIT License
@@ -25,25 +22,172 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ..tools import paths
-import subprocess
+import os
+import time
+import collections
+import threading
+import sublime
+
+from re import findall
+from sys import platform
+from subprocess import Popen, PIPE
+from functools import partial
+
+from ..tools import message, paths
 
 
-def run_command(command, cwd=None):
+class AsyncProcess(object):
 
-    command = prepare_command(command)
-    process = subprocess.Popen(command, stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE, cwd=cwd,
-                               universal_newlines=True, shell=True)
+    def __init__(self, cmd, listener):
+        self.listener = listener
+        self.killed = False
+        self.start_time = time.time()
 
-    while True:
-        output = process.stdout.readline()
-        # exit when there is nothing to show
-        if output == '' and process.poll() is not None:
-            break
+        self.proc = Popen(
+            cmd,
+            stdout=PIPE,
+            stderr=PIPE,
+            stdin=PIPE,
+            shell=True)
 
-        if output:
-            print(output)
+        if(self.proc.stdout):
+            threading.Thread(target=self.read_stdout).start()
+
+        if(self.proc.stderr):
+            threading.Thread(target=self.read_stderr).start()
+
+    def kill(self):
+        """Kill process
+
+        kill the encapsulated subprocess.Popen
+        """
+        if(not self.killed):
+            self.killed = True
+            if(platform == 'win32'):
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                subprocess.Popen("taskkill /PID " + str(self.proc.pid),
+                                 startupinfo=startupinfo)
+            else:
+                self.proc.terminate()
+            self.listener = None
+
+    def poll(self):
+        return self.proc.poll() is None
+
+    def exit_code(self):
+        """
+        return the exit code
+        """
+        return self.proc.poll()
+
+    def read_stdout(self):
+        """Read stdout output
+
+        Reads the stdout outputs when the data is available
+        and send it to the listener to be printed
+        """
+        while True:
+            data = os.read(self.proc.stdout.fileno(), 2 ** 15)
+
+            if(len(data) > 0):
+                if(self.listener):
+                    self.listener.on_data(data)
+            else:
+                self.proc.stdout.close()
+                if(self.listener):
+                    self.listener.on_finished(self)
+                break
+
+    def read_stderr(self):
+        """Read stderr output
+
+        Reads the stderr outputs when the data is available
+        and send it to the listener to be printed
+        """
+        while True:
+            data = os.read(self.proc.stderr.fileno(), 2 ** 15)
+
+            if len(data) > 0:
+                if self.listener:
+                    self.listener.on_data(data)
+            else:
+                self.proc.stderr.close()
+                break
+
+
+class Command:
+    txt = None
+
+    def run(self, cmd=None, working_dir="", kill=False, word_wrap=True):
+        self.window = sublime.active_window()
+
+        # kill the process
+        if(kill):
+            if(self.proc):
+                self.proc.kill()
+                self.proc = None
+            return
+
+        self.txt = message.open('COM3')
+
+        self.encoding = 'utf-8'
+        self.quiet = False
+        self.proc = None
+
+        cmd = prepare_command(cmd)
+
+        if not self.quiet:
+            if cmd:
+                cmd_string = findall(r'\"(.+?)\"', cmd)
+                cmd_string = os.path.normpath(cmd_string[0])
+                cmd_string = os.path.basename(cmd_string)
+                lindex = cmd.rfind('"')
+                cmd_string += cmd[lindex:].replace('"', '')
+
+                self.txt.print("\n\nRunning {}\n\n" .format(cmd_string))
+
+        if working_dir != "":
+            os.chdir(working_dir)
+
+        try:
+            self.proc = AsyncProcess(cmd, self)
+        except Exception as e:
+            pass
+
+    def on_data(self, data):
+        try:
+            characters = data.decode(self.encoding)
+        except:
+            characters = "[Decode error - output not " + self.encoding + "]\n"
+
+        # Normalize newlines, Sublime Text always uses a single \n separator
+        # in memory.
+        characters = characters.replace('\r\n', '\n').replace('\r', '\n')
+        self.txt.print(characters)
+
+    def finish(self, proc):
+        elapsed = time.time() - proc.start_time
+        exit_code = proc.exit_code()
+
+        if(exit_code == 0 or exit_code is None):
+            txt = "\n[Finished in {0:.1f}s]".format(elapsed)
+            self.txt.print(txt)
+        else:
+            txt = "\n[Finished in {0:.1f}s with exit code {1}]\n".format(
+                elapsed, exit_code)
+            self.txt.print(txt)
+
+        if(proc != self.proc):
+            return
+
+        if(exit_code == 0):
+            sublime.status_message("Build finished")
+        else:
+            sublime.status_message("Build finished with errors")
+
+    def on_finished(self, proc):
+        sublime.set_timeout(partial(self.finish, proc), 0)
 
 
 def prepare_command(options):
