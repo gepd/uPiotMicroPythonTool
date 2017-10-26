@@ -303,3 +303,36 @@ def remove_folder(folder_name):
     sampy.close()
 
     finished_action()
+
+
+def help():
+    """Show commands help
+
+    Displays the sampy command usage
+    """
+    start_sampy()
+
+    _help = """\n\nUsage: sampy COMMAND [ARGS]...
+
+        sampy - Sublime Text version of ampy MicroPython Tool
+
+        Sampy is the Sublime Text version of the ampy tool developed
+        by Adafruit. It's a tool to control MicroPython boards over a
+        serial connection.
+
+        Sampy will allow you to manipulate files on the board's internal
+        filesystem and even run scripts from the console or from the
+        Sublime Text interface.
+
+        Commands:
+           get\t\t\tRetrieve a file from the board.
+           ls\t\t\tList the contens on the board.
+           mkdir\t\tCreate a directory on the board.
+           put\t\t\tPut a file or folder and its contents on the board.
+           reset\t\tPerform soft reset/reboot of the board.
+           rm\t\t\tRemove a file fromthe board.
+           rmdir\t\tForcefully remove a folder and all its content from board
+           run\t\t\tRun a script and print it's output
+        """.replace('    ', '')
+
+    txt.print(_help)

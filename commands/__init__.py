@@ -38,6 +38,7 @@ from .run_current_file import upiotRunCurrentFileCommand
 from .console import upiotConsoleCommand
 from .console_write import upiotConsoleWriteCommand
 from .select_board import upiotSelectBoardCommand
+from .sampy_help import upiotSampyHelpCommand
 
 __all__ = [
     'upiotBurnFirmwareCommand',
@@ -56,5 +57,5 @@ __all__ = [
     'upiotRunCurrentFileCommand',
     'upiotConsoleCommand',
     'upiotConsoleWriteCommand',
-
+    'upiotSampyHelpCommand'
 ]

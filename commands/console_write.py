@@ -95,6 +95,7 @@ class upiotConsoleWriteCommand(WindowCommand):
         commands['rm'] = sampy_manager.remove_file
         commands['mkdir'] = sampy_manager.make_folder
         commands['rmdir'] = sampy_manager.remove_folder
+        commands['--help'] = sampy_manager.help
 
         try:
             commands[option]()
