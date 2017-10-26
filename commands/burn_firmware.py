@@ -96,6 +96,8 @@ class upiotBurnFirmwareCommand(WindowCommand):
 
         Uses esptool.py to burn the firmware
         """
+        from ..tools.command import Command
+
         filename = self.url.split('/')[-1]
         firmware = join(self.firmwares, filename)
 
@@ -109,9 +111,6 @@ class upiotBurnFirmwareCommand(WindowCommand):
         if(answer == sublime.DIALOG_CANCEL):
             return
 
-        # show console
-        tools.show_console()
-
         # erase flash
         if(answer == sublime.DIALOG_YES):
             tools.erase_flash()
@@ -121,7 +120,7 @@ class upiotBurnFirmwareCommand(WindowCommand):
         if(not serial.check_port(self.port)):
             return
 
-        tools.run_command(options)
+        Command().run(options)
 
     @staticmethod
     def get_board_options(board):

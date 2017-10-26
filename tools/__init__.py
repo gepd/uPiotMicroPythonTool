@@ -32,7 +32,6 @@ from .. import requests
 from os import path, makedirs
 
 from ..tools.boards import boards_list
-from ..tools.command import run_command
 from ..tools.quick_panel import quick_panel
 
 VERSION = (0, 0, 1)
@@ -131,14 +130,15 @@ def erase_flash():
 
     Erase the flash memory from the current selected device
     """
+    from ..tools.command import Command
     from ..tools import serial
 
     port = serial.selected_port(request_port=True)
     if(not port):
         return
 
-    options = ['esptool', '--port', port, 'erase_flash']
-    run_command(options)
+    options = ['--port', port, 'erase_flash']
+    Command().run(options)
 
 
 def make_folder(folder_path):
