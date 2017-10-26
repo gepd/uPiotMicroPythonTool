@@ -1,0 +1,41 @@
+[
+    {
+        "caption": "Preferences",
+        "mnemonic": "n",
+        "id": "preferences",
+        "children":
+        [
+            {
+                "caption": "Package Settings",
+                "mnemonic": "P",
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "uPiot",
+                        "children":
+                        [
+                            {
+                                "caption": "Settings",
+                                "command": "edit_settings", 
+                                "args": {
+                                    "base_file": "${packages}/upiot/Default.sublime-settings",
+                                    "default": "[\n\t$0\n]\n"
+                                }
+                            },
+                            {"caption": "-"},
+                            {
+                                "caption": "Key Bindings",
+                                "command": "edit_settings", 
+                                "args": {
+                                    "base_file": "${packages}/upiot/Default ($platform).sublime-keymap",
+                                    "default": "[\n\t$0\n]\n"
+                                }
+                            },
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
