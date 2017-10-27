@@ -10,7 +10,7 @@
                 {
                     "sublime_text": ">=3000",
                     "branch": "develop",
-                    "dependencies": ["origami"]
+                    "dependencies": ["requests"]
                 }
             ]
         }

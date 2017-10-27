@@ -17,8 +17,8 @@
 
 > **uPiot** is an experiment to make the work with uPython (micropython) a little bit easier. It uses an modified version of [ampy](https://github.com/adafruit/ampy/) called `sampy` (Sublime + ampy) to comunicate with the device and [pyserial](https://github.com/pyserial/pyserial) to listen for changes. You can also burn the firmware direct from Sublime Text without any extra tool.
 >
-> It is in an alpha state, so you may find some bugs hanging around.
 
+**This plugin is in alpha state, so you may find some bugs hanging around. Help me to improving it opening a issue with your repport or with a PR.**
 
 
 # Setup
