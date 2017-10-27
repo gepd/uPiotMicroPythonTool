@@ -24,7 +24,6 @@
 
 import os
 import time
-import collections
 import threading
 import sublime
 
@@ -32,8 +31,11 @@ from re import findall
 from sys import platform
 from subprocess import Popen, PIPE
 from functools import partial
-
 from ..tools import message, paths
+from collections import deque
+
+_COMMAND_QUEUE = deque()
+_BUSY = False
 
 
 class AsyncProcess(object):
@@ -119,8 +121,11 @@ class AsyncProcess(object):
 class Command:
     txt = None
 
-    def run(self, cmd=None, working_dir="", kill=False, word_wrap=True):
+    def run(self, cmd, port=None, working_dir="", kill=False, word_wrap=True):
         self.window = sublime.active_window()
+
+        global _COMMAND_QUEUE
+        global _BUSY
 
         # kill the process
         if(kill):
@@ -129,7 +134,11 @@ class Command:
                 self.proc = None
             return
 
-        self.txt = message.open('COM3')
+        if(_BUSY):
+            _COMMAND_QUEUE.append(cmd)
+            return
+
+        self.txt = message.open(port)
 
         self.encoding = 'utf-8'
         self.quiet = False
@@ -151,6 +160,7 @@ class Command:
             os.chdir(working_dir)
 
         try:
+            _BUSY = True
             self.proc = AsyncProcess(cmd, self)
         except Exception as e:
             pass
@@ -186,8 +196,21 @@ class Command:
         else:
             sublime.status_message("Build finished with errors")
 
+        # run next command in the deque
+        run_next()
+
     def on_finished(self, proc):
         sublime.set_timeout(partial(self.finish, proc), 0)
+
+
+def run_next():
+    global _COMMAND_QUEUE
+    global _BUSY
+
+    _BUSY = False
+
+    if(len(_COMMAND_QUEUE)):
+        Command().run(_COMMAND_QUEUE.popleft())
 
 
 def prepare_command(options):
