@@ -221,7 +221,7 @@ def open(port):
             UPIOT v{} uPython Tool
             *******************************
 
-            Use --help to get a list of the available commands.
+            Use sampy --help to get a list of the available commands.
 
             https://github.com/gepd/upiot for help, suggetions or bug report.
             ---
