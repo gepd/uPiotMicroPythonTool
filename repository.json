@@ -1,0 +1,17 @@
+{
+    "schema_version": "3.0.0",
+    "packages": [
+        {
+            "name": "uPIOT MicroPython Tool",
+            "details": "https://github.com/gepd/upiot",
+            "donate": "https://gratipay.com/~gepd/",
+            "labels": ["build system", "ide", "micropython", "iot"],
+            "releases": [
+                {
+                    "sublime_text": ">=3000",
+                    "branch": "develop"
+                }
+            ]
+        }
+    ]
+}
