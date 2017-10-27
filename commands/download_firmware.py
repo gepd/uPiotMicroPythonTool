@@ -34,7 +34,13 @@ setting_key = 'firmware_url'
 class upiotDownloadFirmwareCommand(WindowCommand):
     url = None
 
-    def run(self):
+    def run(self, selected=None):
+        # selected board
+        if(not selected):
+            sublime.active_window().run_command('upiot_select_board',
+                                                {'action': tools.DOWNLOAD})
+            return
+
         self.window.show_input_panel('URL:', '', self.callback, None, None)
 
     def callback(self, url):

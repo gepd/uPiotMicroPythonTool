@@ -57,7 +57,8 @@ class upiotBurnFirmwareCommand(WindowCommand):
         board = settings.get(setting_key, None)
 
         if(not selected):
-            sublime.active_window().run_command('upiot_select_board')
+            sublime.active_window().run_command('upiot_select_board',
+                                                {'action': tools.BURN})
             return
 
         self.firmwares = paths.firmware_folder(board)
@@ -120,7 +121,10 @@ class upiotBurnFirmwareCommand(WindowCommand):
         if(not serial.check_port(self.port)):
             return
 
-        Command().run(options)
+        if(self.port in serial.in_use):
+            serial.serial_dict[self.port].close()
+
+        Command().run(options, port=self.port)
 
     @staticmethod
     def get_board_options(board):

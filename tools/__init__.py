@@ -40,6 +40,9 @@ ACTIVE_VIEW = None
 global SETTINGS_NAME
 SETTINGS_NAME = 'upiot.sublime-settings'
 
+DOWNLOAD = 1
+BURN = 2
+
 
 def versionize(raw_version):
     """Semantic Versioning
@@ -138,7 +141,7 @@ def erase_flash():
         return
 
     options = ['--port', port, 'erase_flash']
-    Command().run(options)
+    Command().run(options, port=port)
 
 
 def make_folder(folder_path):

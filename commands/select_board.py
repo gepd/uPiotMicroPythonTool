@@ -34,9 +34,12 @@ setting_key = 'board'
 
 class upiotSelectBoardCommand(WindowCommand):
     items = []
+    action = None
 
-    def run(self):
+    def run(self, action):
+        self.action = action
         self.items = boards.boards_list()
+
         if(not self.items):
             self.items = ['No boards found']
         tools.quick_panel(self.items, self.callback)
@@ -58,5 +61,9 @@ class upiotSelectBoardCommand(WindowCommand):
         settings.set(setting_key, board)
         sublime.save_settings(tools.SETTINGS_NAME)
 
-        sublime.active_window().run_command(
-            'upiot_burn_firmware', {'selected': True})
+        if(self.action == tools.BURN):
+            sublime.active_window().run_command(
+                'upiot_burn_firmware', {'selected': True})
+        elif(self.action == tools.DOWNLOAD):
+            sublime.active_window().run_command(
+                'upiot_download_firmware', {'selected': True})
