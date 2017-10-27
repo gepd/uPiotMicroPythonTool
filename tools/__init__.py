@@ -35,8 +35,6 @@ from ..tools.quick_panel import quick_panel
 
 VERSION = (0, 1, 0, '-alpha')
 ACTIVE_VIEW = None
-
-global SETTINGS_NAME
 SETTINGS_NAME = 'upiot.sublime-settings'
 
 DOWNLOAD = 1
