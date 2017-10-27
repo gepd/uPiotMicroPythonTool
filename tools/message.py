@@ -34,11 +34,11 @@ import threading
 from .. import tools
 
 session = None
-group_index = None
+close_panel = False
 viewer_name = '$ Micropython Viewer'
 
 
-class Message(EventListener):
+class Message:
     BLOCK_SIZE = 2 ** 14
     text_queue = collections.deque()
     text_queue_lock = threading.Lock()
@@ -160,42 +160,41 @@ class Message(EventListener):
         if(view and viewer_name in view.name()):
             group_index = window.get_view_index(view)[0]
 
-    @staticmethod
-    def close_panel():
-        """close output panel
 
-        Closes the output panel if it's open.
-        """
-
-        global group_index
-
-        if(group_index):
-            window = sublime.active_window()
-            window.focus_group(group_index)
-            window.run_command('destroy_pane', {'direction': 'self'})
-            group_index = None
+class CloseConsole(EventListener):
 
     def on_pre_close(self, view):
-        """
-        Get the group number before close a window
-        """
-        global group_index
+        """Check console panel
 
-        window = sublime.active_window()
-        group_index = window.get_view_index(view)[0]
+        Checks if the panel closed is the console or not and store it
+        in a global var
+
+        Arguments:
+            view {obj} -- Sublime Text View
+        """
+        global viewer_name
+        global close_panel
+
+        if(viewer_name in view.name()):
+            close_panel = True
 
     def on_close(self, view):
-        global session
-        global group_index
-        global viewer_name
+        """Close console close
 
-        if(group_index and viewer_name in view.name()):
+        If the panel was identified as console panel, it will be closed
+
+        Arguments:
+            view {obj} -- Sublime Text View
+        """
+        global close_panel
+
+        if(close_panel):
             window = sublime.active_window()
-            window.focus_group(group_index)
-            window.run_command('destroy_pane', {'direction': 'self'})
-            session = None
+            active_group = window.active_group()
 
-        group_index = None
+            if len(window.views_in_group(active_group)) == 0:
+                window.run_command("destroy_pane", args={"direction": "self"})
+        close_panel = False
 
 
 def open(port):
@@ -270,7 +269,7 @@ def new_file_panel(direction):
     word_wrap = {'setting': 'word_wrap'}
     options = {'direction': direction, 'give_focus': True}
 
-    window.run_command('create_pane', options)
+    window.run_command('upiot_create_pane', options)
 
     view = window.new_file()
     view.set_name(viewer_name)

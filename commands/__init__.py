@@ -39,6 +39,7 @@ from .console import upiotConsoleCommand
 from .console_write import upiotConsoleWriteCommand
 from .select_board import upiotSelectBoardCommand
 from .sampy_help import upiotSampyHelpCommand
+from .min_origami import upiotCreatePaneCommand
 
 __all__ = [
     'upiotBurnFirmwareCommand',
@@ -57,5 +58,6 @@ __all__ = [
     'upiotRunCurrentFileCommand',
     'upiotConsoleCommand',
     'upiotConsoleWriteCommand',
-    'upiotSampyHelpCommand'
+    'upiotSampyHelpCommand',
+    'upiotCreatePaneCommand'
 ]
