@@ -27,6 +27,7 @@
 
 from .commands import *
 from sublime_plugin import EventListener
+from .tools.message import CloseConsole
 from .tools import serial
 
 
