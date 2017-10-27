@@ -26,9 +26,8 @@
 # SOFTWARE.
 
 import sublime
+import requests
 from sublime_plugin import WindowCommand
-
-from .. import requests
 from os import path, makedirs
 
 from ..tools.boards import boards_list
