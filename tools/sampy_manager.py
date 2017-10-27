@@ -330,7 +330,7 @@ def help():
            mkdir\t\tCreate a directory on the board.
            put\t\t\tPut a file or folder and its contents on the board.
            reset\t\tPerform soft reset/reboot of the board.
-           rm\t\t\tRemove a file fromthe board.
+           rm\t\t\tRemove a file from the board.
            rmdir\t\tForcefully remove a folder and all its content from board
            run\t\t\tRun a script and print it's output
         """.replace('    ', '')
