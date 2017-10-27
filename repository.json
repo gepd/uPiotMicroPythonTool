@@ -9,8 +9,7 @@
             "releases": [
                 {
                     "sublime_text": ">=3000",
-                    "branch": "develop",
-                    "dependencies": ["requests"]
+                    "branch": "develop"
                 }
             ]
         }
