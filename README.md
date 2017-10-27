@@ -1,7 +1,7 @@
 <p align="center">
-    <a href="https://github.com/gepd/upiot/releases"><img src="https://img.shields.io/github/release/gepd/upiot.svg?maxAge=3600&style=flat-square" alt="Release"></a>
-    <a href="https://packagecontrol.io/packages/uPiot"><img src="https://img.shields.io/packagecontrol/dt/uPiot).svg?maxAge=3600&style=flat-square" alt="Downloads"></a>
-    <a href="https://github.com/gepd/upiot/blob/master/LICENCE"><img src="https://img.shields.io/badge/Licence-%20MIT-green.svg?maxAge=3600&style=flat-square" alt="Licence"></a>
+    <a href="https://github.com/gepd/uPiot-MicroPython-Tool/releases"><img src="https://img.shields.io/github/release/gepd/uPiot-MicroPython-Tool.svg?maxAge=3600&style=flat-square" alt="Release"></a>
+    <a href="https://packagecontrol.io/packages/uPiot-MicroPython-Tool"><img src="https://img.shields.io/packagecontrol/dt/uPiot-MicroPython-Tool).svg?maxAge=3600&style=flat-square" alt="Downloads"></a>
+    <a href="https://github.com/gepd/uPiot-MicroPython-Tool/blob/master/LICENCE"><img src="https://img.shields.io/badge/Licence-%20MIT-green.svg?maxAge=3600&style=flat-square" alt="Licence"></a>
     <a href="https://gratipay.com/~gepd/"><img src="https://img.shields.io/badge/donate-uPiot-red.svg?maxAge=3600&style=flat-square" alt="Donate"></a>
 </p>
 
@@ -27,7 +27,7 @@ uPiot is not yet in the Package control, so you may need an extra step to instal
 
 1. Go to `Preferences > Package Package Control > Add Repository` 
 
-* Paste https://rawgit.com/gepd/upiot/develop/repository.json
+* Paste https://rawgit.com/gepd/uPiot-MicroPython-Tool/master/repository.json
 
 2. Press `ctrl+shift+p` or go to `ST Menu > Preferences > Package Control` and select the option `Package Control: Install Package`
 
@@ -40,7 +40,7 @@ Use the shortcut `ctrl+alt+m` to see all available uPiot options in the command 
 
 **Burn the firmware**
 
-<img src="https://raw.githubusercontent.com/gepd/upiot/master/docs/download_firmware.gif" width="85%">
+<img src="docs/download_firmware.gif" width="85%">
 
 1. From the command menu select `UPIOT: Download Firmware`
 
@@ -48,7 +48,7 @@ Use the shortcut `ctrl+alt+m` to see all available uPiot options in the command 
 
 * It will start to download the file (you will see the download progress in the status bar)
 
-<img src="https://raw.githubusercontent.com/gepd/upiot/master/docs/burn_firmware.gif" width="85%">
+<img src="docs/burn_firmware.gif" width="85%">
 
 3. After the download is finished opens the command menu again and select `UPIOT: Burn Firmware`. 
 
@@ -62,23 +62,23 @@ When it is finished, you will be ready to use micropython in your device.
 
 **Using micropython**
 
-<img src="https://raw.githubusercontent.com/gepd/upiot/master/docs/console_hello_world.gif" width="85%">
+<img src="docs/console_hello_world.gif" width="85%">
 
 To use micropython opens the console with the option `UPIOT: Open Console` (from the command menu). In the input panel paste `print("Hello world from uPiot")`. If everything is fine you will see `Hello world from uPiot`
 
 > Micropython try to run `main.py` each time your board is powered on (or reseted), when you don't have this file you will see `OSError: [Errno 2] ENOENT: main.py` in the output. 
 
-<img src="https://raw.githubusercontent.com/gepd/upiot/master/docs/run_current_file.gif" width="85%">
+<img src="docs/run_current_file.gif" width="85%">
 
 Make a new file and save it as `main.py`, writes `print("Hello world from uPiot")` on it and send it to your device with the command `UPIOT: Put Current File` (You can use `UPIOT: Run Current File` in case you want to test it first) after it finished, restart your board; the error won't be there and you should see the `Hello world from uPiot` in the output.
 
-<img src="https://raw.githubusercontent.com/gepd/upiot/master/docs/put_current_file.gif" width="85%">
+<img src="docs/put_current_file.gif" width="85%">
 
 # Commands
 
 That are the current list of commands availables in the console.
 
-<img src="https://raw.githubusercontent.com/gepd/upiot/master/docs/sampy_example.gif" width="85%">
+<img src="docs/sampy_example.gif" width="85%">
 
 Usage: `sampy COMMAND [ARGS]`
 
@@ -126,7 +126,7 @@ At this moment, there is 4 importantant shorcuts:
 * `ctrl+alt+r` Runs the current file
 * `ctrl+alt+p` Puts the current file
 
-I haven't test the shortcuts in all platforms, if you have any problem [open a issue](https://github.com/gepd/upiot/issues)
+I haven't test the shortcuts in all platforms, if you have any problem [open a issue](https://github.com/gepd/uPiot-MicroPython-Tool/issues)
 
 ## Donate
 
