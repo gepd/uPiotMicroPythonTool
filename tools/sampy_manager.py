@@ -56,7 +56,8 @@ def start_sampy():
     # message printer
     txt = message.open(port)
 
-    return Sampy(port)
+    if(port):
+        return Sampy(port)
 
 
 def finished_action():
