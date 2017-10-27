@@ -3,7 +3,7 @@
     "packages": [
         {
             "name": "uPIOT MicroPython Tool",
-            "details": "https://github.com/gepd/upiot",
+            "details": "https://github.com/gepd/uPiotMicroPythonTool",
             "donate": "https://gratipay.com/~gepd/",
             "labels": ["build system", "ide", "micropython", "iot"],
             "releases": [
