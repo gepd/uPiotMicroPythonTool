@@ -1,0 +1,15 @@
+{
+    // Board to use when you burn the micropython firmware
+    // Options available: esp32, esp8266
+    "board": false,
+
+    // Port to be used with the 'burn firmware' and 'console'
+    // it should be like COM1 for Windows systems and /dev/ttyS0 for unix
+    "serial_port": false,
+    
+    // URL to the firmware to be used by the `Download Firmware` command
+    "firmware_url":
+    [
+        ""
+    ]
+}
