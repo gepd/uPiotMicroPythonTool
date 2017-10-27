@@ -1,0 +1,26 @@
+[
+    { 
+        "keys": ["ctrl+alt+s"], 
+        "command": "edit_settings", 
+        "args": {
+            "base_file": "${packages}/upiot/Default ($platform).sublime-keymap",
+            "default": "[\n\t$0\n]\n"
+        }
+    },{
+        "keys": ["ctrl+alt+m"],
+        "command": "show_overlay",
+        "args": {
+            "overlay": "command_palette", 
+            "text": "UPIOT: "
+        }
+    },{
+        "keys": ["ctrl+alt+o"], 
+        "command": "upiot_console"
+    },{
+        "keys": ["ctrl+alt+r"], 
+        "command": "upiot_run_current_file"
+    },{
+        "keys": ["ctrl+alt+p"], 
+        "command": "upiot_put_current_file"
+    }
+]
