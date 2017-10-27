@@ -34,7 +34,7 @@ from os import path, makedirs
 from ..tools.boards import boards_list
 from ..tools.quick_panel import quick_panel
 
-VERSION = (0, 0, 1)
+VERSION = (0, 1, 0, '-alpha')
 ACTIVE_VIEW = None
 
 global SETTINGS_NAME
