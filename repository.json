@@ -9,7 +9,8 @@
             "releases": [
                 {
                     "sublime_text": ">=3000",
-                    "branch": "develop"
+                    "branch": "develop",
+                    "dependencies": ["origami"]
                 }
             ]
         }
