@@ -222,7 +222,8 @@ def open(port):
 
             Use sampy --help to get a list of the available commands.
 
-            https://github.com/gepd/upiot for help, suggetions or bug report.
+            https://github.com/gepd/uPiotMicroPythonTool for help, suggetions
+            or bug report.
             ---
             """.replace('    ', '').format(__version__)
 
