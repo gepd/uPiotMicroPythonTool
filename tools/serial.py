@@ -136,6 +136,10 @@ class Serial:
         Arguments:
             printer {obj} -- function or method to print the data
         """
+        # clean in and out
+        self._serial.flushInput()
+        self._serial.flushOutput()
+
         while(self.is_running()):
             try:
                 data = self.readable()
