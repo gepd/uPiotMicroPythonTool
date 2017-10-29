@@ -31,6 +31,7 @@ from time import sleep
 from ..tools import pyserial
 from ..tools import SETTINGS_NAME
 from .pyserial.tools import list_ports
+from ..tools import errors
 
 in_use = []
 serial_dict = {}
@@ -190,7 +191,12 @@ def establish_connection(port):
         return
 
     txt = message.open(port)
-    link.open()
+    try:
+        link.open()
+    except pyserial.serialutil.SerialException as e:
+        if('could not open port' in str(e)):
+            txt.print(serialError_noaccess)
+        return
 
     Thread(target=link.keep_listen, args=(txt.print,)).start()
 
