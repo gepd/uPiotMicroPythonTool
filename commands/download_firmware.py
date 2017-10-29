@@ -61,7 +61,9 @@ class upiotDownloadFirmwareCommand(WindowCommand):
         If the file isn't in the firmwares folder, it download the file and
         put it in a folder corresponding to the board selection
         """
-        folder = paths.firmware_folder('esp32')
+        settings = sublime.load_settings(tools.SETTINGS_NAME)
+        board = settings.get('board', None)
+        folder = paths.firmware_folder(board)
         tools.make_folder(folder)
 
         tools.ACTIVE_VIEW = self.window.active_view()

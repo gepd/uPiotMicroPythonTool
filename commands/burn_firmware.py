@@ -40,6 +40,7 @@ setting_key = 'board'
 
 
 class upiotBurnFirmwareCommand(WindowCommand):
+    board = None
     port = None
     items = None
     firmwares = None
@@ -54,14 +55,14 @@ class upiotBurnFirmwareCommand(WindowCommand):
         self.items = []
 
         settings = sublime.load_settings(tools.SETTINGS_NAME)
-        board = settings.get(setting_key, None)
+        self.board = settings.get(setting_key, None)
 
         if(not selected):
             sublime.active_window().run_command('upiot_select_board',
                                                 {'action': tools.BURN})
             return
 
-        self.firmwares = paths.firmware_folder(board)
+        self.firmwares = paths.firmware_folder(self.board)
         self.firmware_list()
 
         tools.quick_panel(self.items, self.callback_selection)
@@ -102,7 +103,7 @@ class upiotBurnFirmwareCommand(WindowCommand):
         filename = self.url.split('/')[-1]
         firmware = join(self.firmwares, filename)
 
-        options = self.get_board_options('esp32')
+        options = self.get_board_options(self.board)
         options.append(firmware)
 
         caption = "Do you want to erase the flash memory?"
