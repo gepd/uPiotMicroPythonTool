@@ -26,9 +26,8 @@ import sublime
 
 from os import path, mkdir
 from ..tools import check_sidebar_folder, make_folder as mkfolder
-from ..tools import message
+from ..tools import message, serial, errors
 from ..tools.sampy import Sampy
-from ..tools import serial
 from ..tools.ampy import files, pyboard
 
 txt = None
@@ -57,7 +56,14 @@ def start_sampy():
     txt = message.open(port)
 
     if(port):
-        return Sampy(port)
+        try:
+            return Sampy(port)
+        except pyboard.PyboardError as e:
+            from sys import exit
+
+            if('failed to access' in str(e)):
+                txt.print(errors.serialError_noaccess)
+            exit(0)
 
 
 def finished_action():
