@@ -104,17 +104,18 @@ def run_file(filepath):
         output = ""
         # get error
         output = str(e)
-        # converted in tuple and extract the 'Traceback' error
-        output = str(eval(output)[2])[2:-1]
+
+        try:
+            # converted in tuple and extract the 'Traceback' error
+            output = str(eval(output)[2])[2:-1]
+        except:
+            pass
         # replace \r\n strings
         output = output.replace('\\r\\n', '\n')
         # replace scape slash
         output = output.replace('\\\'', '\'')
 
-    if(message):
-        txt.print('\n\n' + output)
-    else:
-        print(output)
+    txt.print('\n\n' + output)
 
     sampy.close()
 
