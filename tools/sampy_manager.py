@@ -54,6 +54,7 @@ def start_sampy():
 
     # message printer
     txt = message.open(port)
+    txt.set_focus()
 
     if(port):
         try:

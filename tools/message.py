@@ -68,6 +68,14 @@ class Message:
 
         session = self
 
+    def set_focus(self):
+        """Set focus
+
+        Sets the focus to the console window
+        """
+        window = sublime.active_window()
+        window.focus_view(self.output_view)
+
     def print(self, text):
         """
         Adds the string in the deque list
@@ -210,6 +218,7 @@ def open(port):
     """
     if(Message().recover_panel(port)):
         txt = session
+        txt.set_focus()
     else:
         from ..tools import __version__
 
