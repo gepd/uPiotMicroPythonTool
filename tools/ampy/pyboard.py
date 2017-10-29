@@ -159,6 +159,7 @@ class Pyboard:
         self.serial.close()
 
     def read_until(self, min_num_bytes, ending, timeout=10, data_consumer=None):
+        frepl = b'Type "help()" for more information'
         data = self.serial.read(min_num_bytes)
         if data_consumer:
             data_consumer(data)
@@ -166,6 +167,10 @@ class Pyboard:
         while True:
             if data.endswith(ending):
                 break
+            if data.endswith(frepl):
+                data = b''
+                # ctrl-A: enter raw REPL
+                self.serial.write(b'\r\x01')
             elif self.serial.inWaiting() > 0:
                 new_data = self.serial.read(1)
                 data = data + new_data
