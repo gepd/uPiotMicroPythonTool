@@ -152,7 +152,8 @@ class Serial:
             if(not printer):
                 break
 
-            printer(data)
+            if(data.strip()):
+                printer(data)
 
     def close(self):
         """Close serial connection

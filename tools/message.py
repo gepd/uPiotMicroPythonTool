@@ -109,9 +109,7 @@ class Message:
         self.output_view.set_read_only(False)
         self.output_view.run_command('append', {'characters': text})
         self.output_view.set_read_only(True)
-        if(text.rstrip()):
-            self.output_view.run_command(
-                "move_to", {"extend": True, "to": "eof"})
+        self.output_view.run_command("move_to", {"extend": True, "to": "eof"})
 
     def recover_panel(self, port):
         """
