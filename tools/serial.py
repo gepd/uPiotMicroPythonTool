@@ -35,7 +35,7 @@ from ..tools import errors
 
 in_use = []
 serial_dict = {}
-setting_key = 'serial_ports'
+setting_key = 'serial_port'
 
 
 class Serial:
