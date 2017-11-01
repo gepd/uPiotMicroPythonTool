@@ -28,7 +28,11 @@
 from .commands import *
 from sublime_plugin import EventListener
 from .tools.message import CloseConsole
-from .tools import serial
+from .tools import serial, message_upgrade
+
+
+def plugin_loaded():
+    message_upgrade()
 
 
 class uPiotListener(EventListener):

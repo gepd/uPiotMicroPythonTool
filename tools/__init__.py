@@ -28,6 +28,8 @@
 import sublime
 import requests
 from sublime_plugin import WindowCommand
+from package_control import events
+from ..tools.paths import plugin_name
 from os import path, makedirs
 
 from ..tools.boards import boards_list
@@ -60,6 +62,13 @@ def versionize(raw_version):
 __all__ = ["boards_list",
            "run_command",
            "quick_panel"]
+
+
+def message_upgrade():
+    package_name = plugin_name()
+
+    if(events.post_upgrade(package_name)):
+        message_dialog("uPiot Updated, please restart Sublime Text")
 
 
 def get_headers():
