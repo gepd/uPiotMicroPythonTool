@@ -40,6 +40,9 @@ Or:
 import sys
 import time
 
+in_use = []
+serial_dict = {}
+
 try:
     stdout = sys.stdout.buffer
 except AttributeError:
@@ -124,6 +127,7 @@ class TelnetToSerial:
 
 
 class Pyboard:
+    port = None
 
     def __init__(self, device, baudrate=115200, user='micro', password='python', wait=0):
         if device and device[0].isdigit() and device[-1].isdigit() and device.count('.') == 3:
@@ -137,6 +141,11 @@ class Pyboard:
                 try:
                     self.serial = serial.Serial(
                         device, baudrate=baudrate, interCharTimeout=1)
+
+                    in_use.append(device)
+                    serial_dict[device] = self
+
+                    self.port = device
                     break
                 except (OSError, IOError):  # Py2 and Py3 have different errors
                     if wait == 0:
@@ -155,7 +164,12 @@ class Pyboard:
             if delayed:
                 print('')
 
+    def write(self, data):
+        self.serial.write(data)
+
     def close(self):
+        in_use.remove(self.port)
+        del serial_dict[self.port]
         self.serial.close()
 
     def read_until(self, min_num_bytes, ending, timeout=10, data_consumer=None):

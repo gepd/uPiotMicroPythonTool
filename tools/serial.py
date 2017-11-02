@@ -124,7 +124,7 @@ class Serial:
         Returns:
             int -- Number of bytes written.
         """
-        data += line_ending
+        data = line_ending if data == ' ' else data + line_ending
         data = data.encode('utf-8', 'replace')
 
         return self._serial.write(data)

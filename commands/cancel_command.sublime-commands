@@ -1,0 +1,7 @@
+[
+	{
+        "caption": "UPIOT: Cancel (Ctrl + C)", 
+        "command": "upiot_raw_serial",
+        "args": {"data": "\\x03"}
+    }
+]

@@ -237,4 +237,17 @@ def clean_status():
     if(ACTIVE_VIEW):
         ACTIVE_VIEW.erase_status('_upiot_')
 
+
+def str_cmd_serial(cmd):
+    """String command to serial
+
+    Convert a string in a serial command, it means handles scape character and
+    convert it to by as is required by the serial.
+
+    Arguments:
+        cmd {str} -- serial command string
+    """
+    data = cmd.replace('\\x03', '\x03')
+    return data.encode('utf-8', 'replace')
+
 __version__ = versionize(VERSION)
