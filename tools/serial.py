@@ -138,8 +138,9 @@ class Serial:
             printer {obj} -- function or method to print the data
         """
         # clean in and out
-        self._serial.flushInput()
-        self._serial.flushOutput()
+        sleep(1.5)
+
+        self.flush()
 
         while(self.is_running()):
             try:
@@ -154,6 +155,14 @@ class Serial:
 
             if(data.strip()):
                 printer(data)
+
+    def flush(self):
+        """Clean input and output
+
+        Cleans the input and output in the connected serial port
+        """
+        self._serial.flushOutput()
+        self._serial.flushInput()
 
     def close(self):
         """Close serial connection

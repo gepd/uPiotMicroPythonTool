@@ -82,6 +82,8 @@ class Message:
         """
         self.text_queue_lock.acquire()
         try:
+            if(type(text) == bytes):
+                text = text.decode('utf-8')
             self.text_queue.append(text)
         finally:
             self.text_queue_lock.release()
