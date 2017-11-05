@@ -54,10 +54,11 @@ def start_sampy():
 
     # message printer
     txt = message.open(port)
+    txt.set_focus()
 
     if(port):
         try:
-            return Sampy(port)
+            return Sampy(port, data_consumer=txt.print)
         except pyboard.PyboardError as e:
             from sys import exit
 
@@ -93,29 +94,13 @@ def run_file(filepath):
 
     # print command name
     file = path.basename(filepath)
-    txt.print('\n\n>> Run {}'.format(file))
 
-    try:
-        output = sampy.run(filepath)
-        output = output.replace('\r\n', '\n').rstrip()
-    except FileNotFoundError as e:
-        output = str(e)
-    except pyboard.PyboardError as e:
-        output = ""
-        # get error
-        output = str(e)
+    head = '\n\n>> Run {0}\n\n"ctrl+shift+c" to stop the script.\n---'
+    txt.print(head.format(file))
 
-        try:
-            # converted in tuple and extract the 'Traceback' error
-            output = str(eval(output)[2])[2:-1]
-        except:
-            pass
-        # replace \r\n strings
-        output = output.replace('\\r\\n', '\n')
-        # replace scape slash
-        output = output.replace('\\\'', '\'')
+    sampy.run(filepath)
 
-    txt.print('\n\n' + output)
+    txt.print("\n[done]")
 
     sampy.close()
 
@@ -186,7 +171,7 @@ def get_files(destination):
             with open(filepath, 'w') as file:
                 file.write(sampy.get(filename))
 
-    txt.print('\n\ndone')
+    txt.print("\n[done]")
 
     sampy.close()
 
@@ -226,7 +211,7 @@ def put_file(filepath):
 
     try:
         sampy.put(path.normpath(filepath))
-        output = 'done'
+        output = '[done]'
     except FileNotFoundError as e:
         output = str(e)
 
@@ -252,7 +237,7 @@ def remove_file(filepath):
 
     try:
         sampy.rm(filepath)
-        output = 'done'
+        output = '[done]'
     except RuntimeError as e:
         output = str(e)
 
@@ -277,7 +262,7 @@ def make_folder(folder_name):
 
     try:
         sampy.mkdir(folder_name)
-        output = 'done'
+        output = '[done]'
     except files.DirectoryExistsError as e:
         output = str(e)
 
@@ -302,7 +287,7 @@ def remove_folder(folder_name):
 
     try:
         sampy.rmdir(folder_name)
-        output = 'done'
+        output = '[done]'
     except RuntimeError as e:
         output = str(e)
 

@@ -35,7 +35,7 @@ from ..tools import errors
 
 in_use = []
 serial_dict = {}
-setting_key = 'serial_ports'
+setting_key = 'serial_port'
 
 
 class Serial:
@@ -124,7 +124,7 @@ class Serial:
         Returns:
             int -- Number of bytes written.
         """
-        data += line_ending
+        data = line_ending if data == ' ' else data + line_ending
         data = data.encode('utf-8', 'replace')
 
         return self._serial.write(data)
@@ -138,8 +138,9 @@ class Serial:
             printer {obj} -- function or method to print the data
         """
         # clean in and out
-        self._serial.flushInput()
-        self._serial.flushOutput()
+        sleep(1.5)
+
+        self.flush()
 
         while(self.is_running()):
             try:
@@ -152,7 +153,16 @@ class Serial:
             if(not printer):
                 break
 
-            printer(data)
+            if(data.strip()):
+                printer(data)
+
+    def flush(self):
+        """Clean input and output
+
+        Cleans the input and output in the connected serial port
+        """
+        self._serial.flushOutput()
+        self._serial.flushInput()
 
     def close(self):
         """Close serial connection

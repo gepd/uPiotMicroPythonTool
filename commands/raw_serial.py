@@ -1,6 +1,3 @@
-# !/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # This file is part of the uPiot project, https://github.com/gepd/upiot/
 #
 # MIT License
@@ -25,19 +22,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .commands import *
-from sublime_plugin import EventListener
-from .tools.message import CloseConsole
-from .tools import serial, message_upgrade
+import sublime
+from sublime_plugin import WindowCommand
+
+from ..tools import serial
+from ..tools.ampy import pyboard
+from ..tools import str_cmd_serial
 
 
-def plugin_loaded():
-    message_upgrade()
+class upiotRawSerialCommand(WindowCommand):
 
-
-class uPiotListener(EventListener):
-
-    def on_close(self, view):
+    def run(self, data):
         port = serial.selected_port()
-        if(port in serial.in_use):
-            serial.serial_dict[port].close()
+
+        try:
+            sserial = serial.serial_dict[port]
+            sserial.write(str_cmd_serial(data))
+        except:
+            sserial = pyboard.serial_dict[port]
+            sserial.write(str_cmd_serial(data))

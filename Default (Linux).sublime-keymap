@@ -22,5 +22,9 @@
     },{
         "keys": ["ctrl+alt+p"], 
         "command": "upiot_put_current_file"
+    },{
+        "keys": ["ctrl+shift+c"], 
+        "command": "upiot_raw_serial",
+        "args": {"data": "\\x03"}
     }
 ]

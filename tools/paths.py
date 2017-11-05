@@ -43,6 +43,14 @@ def plugin_folder():
     return plugin_path
 
 
+def plugin_name():
+    """
+    Get the plugin folder name
+    """
+    plugin_path = plugin_folder()
+    return path.basename(plugin_path)
+
+
 def esptool_file():
     """
     Get the path of the esptool.py file

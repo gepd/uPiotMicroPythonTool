@@ -226,20 +226,11 @@ class Files(object):
                 raise ex
         self._pyboard.exit_raw_repl()
 
-    def run(self, filename, wait_output=True):
-        """Run the provided script and return its output.  If wait_output is True
-        (default) then wait for the script to finish and then print its output,
-        otherwise just run the script and don't wait for any output.
+    def run(self, filename):
+        """Run the provided script and show the output in realtime.
+        If a print callback was provided in the pyboard module, it will be
+        used to print the output instead of print() used by the ST console
         """
         self._pyboard.enter_raw_repl()
-        out = None
-        if wait_output:
-            # Run the file and wait for output to return.
-            out = self._pyboard.execfile(filename)
-        else:
-            # Read the file and run it using lower level pyboard functions that
-            # won't wait for it to finish or return output.
-            with open(filename, 'rb') as infile:
-                self._pyboard.exec_raw_no_follow(infile.read())
+        self._pyboard.execfile(filename)
         self._pyboard.exit_raw_repl()
-        return out

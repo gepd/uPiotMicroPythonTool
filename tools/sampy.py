@@ -36,7 +36,7 @@ _board = None
 class Sampy:
     _board = None
 
-    def __init__(self, port, baudrate=115200):
+    def __init__(self, port, baudrate=115200, data_consumer=None):
         """ampy - Adafruit MicroPython Tool
 
         Ampy is a tool to control MicroPython boards over a serial connection.
@@ -55,7 +55,7 @@ class Sampy:
         # in windows_full_port_name function).
         if platform() == 'windows':
             port = windows_full_port_name(port)
-        _board = pyboard.Pyboard(port, baudrate)
+        _board = pyboard.Pyboard(port, baudrate, data_consumer=data_consumer)
 
     def get(self, remote_file, local_file=None):
         """
@@ -250,7 +250,7 @@ class Sampy:
         """
         # Run the provided file and print its output.
         board_files = files.Files(_board)
-        output = board_files.run(local_file, not no_output)
+        output = board_files.run(local_file)
         if output is not None:
             return output.decode('utf-8')
 

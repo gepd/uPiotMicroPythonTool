@@ -68,12 +68,22 @@ class Message:
 
         session = self
 
+    def set_focus(self):
+        """Set focus
+
+        Sets the focus to the console window
+        """
+        window = sublime.active_window()
+        window.focus_view(self.output_view)
+
     def print(self, text):
         """
         Adds the string in the deque list
         """
         self.text_queue_lock.acquire()
         try:
+            if(type(text) == bytes):
+                text = text.decode('utf-8')
             self.text_queue.append(text)
         finally:
             self.text_queue_lock.release()
@@ -109,9 +119,7 @@ class Message:
         self.output_view.set_read_only(False)
         self.output_view.run_command('append', {'characters': text})
         self.output_view.set_read_only(True)
-        if(text.rstrip()):
-            self.output_view.run_command(
-                "move_to", {"extend": True, "to": "eof"})
+        self.output_view.run_command("move_to", {"extend": True, "to": "eof"})
 
     def recover_panel(self, port):
         """
@@ -212,6 +220,7 @@ def open(port):
     """
     if(Message().recover_panel(port)):
         txt = session
+        txt.set_focus()
     else:
         from ..tools import __version__
 

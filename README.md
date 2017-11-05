@@ -112,6 +112,7 @@ List of options available in the command menu. (`ctrl+alt+m`)
 |Put Current File|Puts the focused file your device|
 |Run Current File|Runs the focused file your device|
 |Select Serial Port|Selects the serial port to be used in the Console or `Burn Firmware` command|
+|Cancel (Ctrl + C)|Sends a cancel string to the open serial port (\x03)|
 |Write in Console|Sends an string through the serial port. You can also use the [Console commands]|
 |Sync File From Device|Search all files in your device and save it in the given location|
 |Help|Opens this github|
@@ -125,6 +126,7 @@ At this moment, there is 4 importantant shorcuts:
 * `ctrl+alt+o` Opents the uPiot console
 * `ctrl+alt+r` Runs the current file
 * `ctrl+alt+p` Puts the current file
+* `ctrl+shift+c` Sends a cancel string to the open serial port (\x03)
 
 I haven't test the shortcuts in all platforms, if you have any problem [open a issue](https://github.com/gepd/uPiot-MicroPython-Tool/issues)
 

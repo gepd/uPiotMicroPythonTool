@@ -40,6 +40,7 @@ from .console_write import upiotConsoleWriteCommand
 from .select_board import upiotSelectBoardCommand
 from .sampy_help import upiotSampyHelpCommand
 from .min_origami import upiotCreatePaneCommand
+from .raw_serial import upiotRawSerialCommand
 
 __all__ = [
     'upiotBurnFirmwareCommand',
@@ -59,5 +60,6 @@ __all__ = [
     'upiotConsoleCommand',
     'upiotConsoleWriteCommand',
     'upiotSampyHelpCommand',
-    'upiotCreatePaneCommand'
+    'upiotCreatePaneCommand',
+    'upiotRawSerialCommand'
 ]

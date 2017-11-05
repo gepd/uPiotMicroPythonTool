@@ -28,12 +28,14 @@
 import sublime
 import requests
 from sublime_plugin import WindowCommand
+from package_control import events
+from ..tools.paths import plugin_name
 from os import path, makedirs
 
 from ..tools.boards import boards_list
 from ..tools.quick_panel import quick_panel
 
-VERSION = (0, 1, 1, '-alpha')
+VERSION = (0, 1, 2, '-alpha')
 ACTIVE_VIEW = None
 SETTINGS_NAME = 'upiot.sublime-settings'
 
@@ -60,6 +62,13 @@ def versionize(raw_version):
 __all__ = ["boards_list",
            "run_command",
            "quick_panel"]
+
+
+def message_upgrade():
+    package_name = plugin_name()
+
+    if(events.post_upgrade(package_name)):
+        message_dialog("uPiot Updated, please restart Sublime Text")
 
 
 def get_headers():
@@ -227,5 +236,18 @@ def clean_status():
     """
     if(ACTIVE_VIEW):
         ACTIVE_VIEW.erase_status('_upiot_')
+
+
+def str_cmd_serial(cmd):
+    """String command to serial
+
+    Convert a string in a serial command, it means handles scape character and
+    convert it to by as is required by the serial.
+
+    Arguments:
+        cmd {str} -- serial command string
+    """
+    data = cmd.replace('\\x03', '\x03')
+    return data.encode('utf-8', 'replace')
 
 __version__ = versionize(VERSION)
