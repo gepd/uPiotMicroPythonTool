@@ -32,6 +32,7 @@ from ..tools import pyserial
 from ..tools import SETTINGS_NAME
 from .pyserial.tools import list_ports
 from ..tools import errors
+from ..tools import status_color
 
 in_use = []
 serial_dict = {}
@@ -147,6 +148,7 @@ class Serial:
                 data = self.readable()
             except pyserial.serialutil.SerialException:
                 self.close()
+                status_color.set("error", 2000)
                 printer("\n\nSerialError: device disconected")
                 break
 
@@ -164,7 +166,7 @@ class Serial:
         self._serial.flushOutput()
         self._serial.flushInput()
 
-    def close(self):
+    def close(self, clean_color=True):
         """Close serial connection
 
         Closes the serial connection in the port selected.
@@ -178,6 +180,9 @@ class Serial:
 
         in_use.remove(port)
         del serial_dict[port]
+
+        if(clean_color):
+            status_color.remove()
 
 
 def establish_connection(port):
@@ -206,7 +211,10 @@ def establish_connection(port):
     except pyserial.serialutil.SerialException as e:
         if('could not open port' in str(e)):
             txt.print(serialError_noaccess)
+            status_color.remove()
         return
+
+    status_color.set("success")
 
     Thread(target=link.keep_listen, args=(txt.print,)).start()
 

@@ -26,7 +26,7 @@ import sublime
 
 from os import path, mkdir
 from ..tools import check_sidebar_folder, make_folder as mkfolder
-from ..tools import message, serial, errors
+from ..tools import message, serial, errors, status_color
 from ..tools.sampy import Sampy
 from ..tools.ampy import files, pyboard
 
@@ -50,7 +50,7 @@ def start_sampy():
     # close the current connection in open port
     if(port in serial.in_use):
         run_serial = serial.serial_dict[port]
-        run_serial.close()
+        run_serial.close(clean_color=False)
 
     # message printer
     txt = message.open(port)
@@ -64,6 +64,7 @@ def start_sampy():
 
             if('failed to access' in str(e)):
                 txt.print(errors.serialError_noaccess)
+                status_color.remove()
             exit(0)
 
 
