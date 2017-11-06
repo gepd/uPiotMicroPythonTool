@@ -26,18 +26,18 @@
 # SOFTWARE.
 
 from .commands import *
+from .tools import message_upgrade, message
 from sublime_plugin import EventListener
-from .tools.message import CloseConsole
-from .tools import serial, message_upgrade
 
 
 def plugin_loaded():
     message_upgrade()
 
 
-class uPiotListener(EventListener):
+class uListener(EventListener):
+
+    def on_pre_close(self, view):
+        message.session.on_pre_close(view)
 
     def on_close(self, view):
-        port = serial.selected_port()
-        if(port in serial.in_use):
-            serial.serial_dict[port].close()
+        message.session.on_close(view)

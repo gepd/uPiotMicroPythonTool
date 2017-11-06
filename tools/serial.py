@@ -163,8 +163,9 @@ class Serial:
 
         Cleans the input and output in the connected serial port
         """
-        self._serial.flushOutput()
-        self._serial.flushInput()
+        if(self.is_running):
+            self._serial.flushOutput()
+            self._serial.flushInput()
 
     def close(self, clean_color=True):
         """Close serial connection

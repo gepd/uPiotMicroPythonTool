@@ -26,7 +26,7 @@
 # SOFTWARE.
 
 import sublime
-from sublime_plugin import EventListener
+import sublime_plugin
 
 import collections
 import threading
@@ -39,7 +39,7 @@ viewer_name = '$ Micropython Viewer'
 
 
 class Message:
-    BLOCK_SIZE = 2 ** 14
+    port = None
     text_queue = collections.deque()
     text_queue_lock = threading.Lock()
 
@@ -168,9 +168,6 @@ class Message:
         if(view and viewer_name in view.name()):
             group_index = window.get_view_index(view)[0]
 
-
-class CloseConsole(EventListener):
-
     def on_pre_close(self, view):
         """Check console panel
 
@@ -184,7 +181,11 @@ class CloseConsole(EventListener):
         global close_panel
 
         if(viewer_name in view.name()):
-            close_panel = True
+            window = view.window()
+            group = window.get_view_index(view)[0]
+            close_panel = [window, group]
+
+            self.port = view.name().split(' | ')[1]
 
     def on_close(self, view):
         """Close console close
@@ -197,11 +198,17 @@ class CloseConsole(EventListener):
         global close_panel
 
         if(close_panel):
-            window = sublime.active_window()
-            active_group = window.active_group()
+            window = close_panel[0]
 
-            if len(window.views_in_group(active_group)) == 0:
+            if(len(window.views_in_group(close_panel[1])) == 0):
                 window.run_command("destroy_pane", args={"direction": "self"})
+
+            # closes serial connection
+            from ..tools import serial
+
+            if(self.port in serial.in_use):
+                serial.serial_dict[self.port].close()
+
         close_panel = False
 
 
