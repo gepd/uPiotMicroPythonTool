@@ -231,12 +231,12 @@ class Pyboard:
         # ctrl-B: enter friendly REPL
         self.serial.write(b'\r\x02')
 
-    def eval(self, expression):
+    def eval(self, expression, quiet=False):
         ret = self.exec_('print({})'.format(expression))
         ret = ret.strip()
         return ret
 
-    def exec_(self, command):
+    def exec_(self, command, quiet=True):
         if isinstance(command, bytes):
             command_bytes = command
         else:
@@ -259,15 +259,20 @@ class Pyboard:
         if data != b'OK':
             raise PyboardError('could not exec command')
 
-        # add to lines in the console
-        self.data_consumer('\n\n')
         # receive data from the serial port
-        self.receive_serial_data()
+        out = self.receive_serial_data(quiet)
         # Receive data after use '\x03'
-        self.receive_serial_data()
+        self.receive_serial_data(quiet)
 
-    def receive_serial_data(self):
+        return out
+
+    def receive_serial_data(self, quiet=True):
+        session_data = b''
         data = b''
+
+        # add to lines in the console
+        if(not quiet):
+            self.data_consumer('\n\n')
 
         while(b'\x04' not in data):
             data += self.serial.read(1)
@@ -276,13 +281,16 @@ class Pyboard:
             if(data.endswith(b'\r\n') and b'\x04' not in data):
                 # normalizes end of line for ST
                 data = data.replace(b'\r\n', b'\n')
-                self.data_consumer(data)
+                if(not quiet):
+                    self.data_consumer(data)
+                session_data += data
                 data = b''
+        return session_data
 
     def execfile(self, filename):
         with open(filename, 'rb') as f:
             pyfile = f.read()
-        return self.exec_(pyfile)
+        return self.exec_(pyfile, quiet=False)
 
     def get_time(self):
         t = str(self.eval('pyb.RTC().datetime()'),
