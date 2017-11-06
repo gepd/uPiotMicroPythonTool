@@ -35,7 +35,7 @@ from os import path, makedirs
 from ..tools.boards import boards_list
 from ..tools.quick_panel import quick_panel
 
-VERSION = (0, 1, 2, '-alpha')
+VERSION = (0, 1, 3, '-alpha')
 ACTIVE_VIEW = None
 SETTINGS_NAME = 'upiot.sublime-settings'
 
