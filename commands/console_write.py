@@ -51,9 +51,13 @@ class upiotConsoleWriteCommand(WindowCommand):
             return
 
         # run sampy commands
-        if(data.startswith('sampy')):
+        if(data.startswith(('sampy', '--help'))):
             data = data.split()
-            cmd = data[1]
+            try:
+                cmd = data[1]
+            except IndexError:
+                cmd = data[0]
+
             arg = data[2] if(len(data) > 2) else None
 
             th = Thread(target=self.sampy_commands, args=(cmd, arg))
