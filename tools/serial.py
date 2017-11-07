@@ -103,7 +103,7 @@ class Serial:
         Returns:
             bool -- True if the port is running (open) false if not
         """
-        return not self._stop_task
+        return self._serial.is_open
 
     def write(self, data):
         """Write bytedata to the port
@@ -147,7 +147,7 @@ class Serial:
 
         self.flush()
 
-        while(self.is_running()):
+        while(not self._stop_task):
             try:
                 data = self.readable()
             except pyserial.serialutil.SerialException:
