@@ -37,7 +37,9 @@ def plugin_loaded():
 class uListener(EventListener):
 
     def on_pre_close(self, view):
-        message.session.on_pre_close(view)
+        if(message.session):
+            message.session.on_pre_close(view)
 
     def on_close(self, view):
-        message.session.on_close(view)
+        if(message.session):
+            message.session.on_close(view)
