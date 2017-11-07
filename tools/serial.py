@@ -62,8 +62,9 @@ class Serial:
 
         # store port used
         port = self._serial.port
-        in_use.append(port)
-        serial_dict[port] = self
+        if(port not in in_use):
+            in_use.append(port)
+            serial_dict[port] = self
 
     def receive(self):
         """Receive data
