@@ -208,7 +208,9 @@ class Message:
             from ..tools import serial
 
             if(self.port in serial.in_use):
-                serial.serial_dict[self.port].close()
+                link = serial.serial_dict[self.port]
+                link.disconnect()
+                link.destroy()
                 status_color.set("error", 2000)
 
         close_panel = False
