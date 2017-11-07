@@ -71,6 +71,18 @@ class upiotConsoleWriteCommand(WindowCommand):
             serial.establish_connection(self.port)
 
         link = serial.serial_dict[self.port]
+
+        # destroy connection
+        if(data == '--close'):
+            from ..tools import message
+
+            link.disconnect()
+            link.destroy()
+
+            txt = message.open(self.port)
+            txt.print("\n\nConnection to port {0} closed.".format(self.port))
+            return
+
         link.writable(data)
 
         self.window.run_command('upiot_console_write')
