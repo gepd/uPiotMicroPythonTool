@@ -34,7 +34,7 @@ txt = None
 port = None
 
 
-def start_sampy():
+def start_sampy(quiet=False):
     """
     Opens the sampy connection in the selected port. If already is a serial
     connection running it will look into it and close it.
@@ -48,7 +48,7 @@ def start_sampy():
     port = serial.selected_port()
 
     # close the current connection in open port
-    if(port in serial.in_use):
+    if(port in serial.in_use and not quiet):
         run_serial = serial.serial_dict[port]
         run_serial.disconnect()
 
@@ -56,7 +56,7 @@ def start_sampy():
     txt = message.open(port)
     txt.set_focus()
 
-    if(port):
+    if(port and not quiet):
         try:
             return Sampy(port, data_consumer=txt.print)
         except pyboard.PyboardError as e:
@@ -304,7 +304,7 @@ def help():
 
     Displays the sampy command usage
     """
-    start_sampy()
+    start_sampy(quiet=True)
 
     _help = """\n\nUsage: sampy COMMAND [ARGS]...
 
@@ -330,3 +330,4 @@ def help():
         """.replace('    ', '')
 
     txt.print(_help)
+    finished_action()
