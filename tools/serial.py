@@ -218,7 +218,7 @@ def establish_connection(port):
         link.open()
     except pyserial.serialutil.SerialException as e:
         if('could not open port' in str(e)):
-            txt.print(serialError_noaccess)
+            txt.print(errors.serialError_noaccess)
             status_color.remove()
         return
 
