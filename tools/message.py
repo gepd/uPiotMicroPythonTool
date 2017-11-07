@@ -32,6 +32,7 @@ import collections
 import threading
 
 from .. import tools
+from ..tools import status_color
 
 session = None
 close_panel = False
@@ -208,6 +209,7 @@ class Message:
 
             if(self.port in serial.in_use):
                 serial.serial_dict[self.port].close()
+                status_color.set("error", 2000)
 
         close_panel = False
 
