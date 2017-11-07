@@ -28,10 +28,19 @@
 from .commands import *
 from .tools import message_upgrade, message
 from sublime_plugin import EventListener
+from shutil import rmtree
+from .tools.paths import status_color_folder
 
 
 def plugin_loaded():
     message_upgrade()
+
+# plugin_unload is not working so if the status bar color
+#  folder is present when ST starts, it will remove it.
+try:
+    rmtree(status_color_folder())
+except:
+    pass
 
 
 class uListener(EventListener):

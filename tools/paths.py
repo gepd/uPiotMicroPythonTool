@@ -43,6 +43,15 @@ def plugin_folder():
     return plugin_path
 
 
+def status_color_folder():
+    """
+    Packages/User/Status Color/
+    """
+    plugin = path.dirname(plugin_folder())
+    status_color = path.join(plugin, 'User', 'Status Color')
+    return status_color
+
+
 def plugin_name():
     """
     Get the plugin folder name
