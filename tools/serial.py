@@ -57,6 +57,9 @@ class Serial:
         in_use:         list of port already open
         serial_dict:    dictionary with the serial object
         """
+        global in_use
+        global serial_dict
+
         self._serial.open()
         self._stop_task = False
 
@@ -199,6 +202,8 @@ def establish_connection(port):
     """
     from ..tools import message
     from threading import Thread
+
+    global serial_dict
 
     try:
         link = serial_dict[port]
