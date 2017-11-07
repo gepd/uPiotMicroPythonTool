@@ -118,7 +118,7 @@ class upiotConsoleWriteCommand(WindowCommand):
         except:
             try:
                 commands[option](arg)
-            except:
+            except KeyError:
                 from ..tools import message
                 txt = message.open(self.port)
                 txt.print('\n\n>> CommandError: "{}" not found'.format(option))
