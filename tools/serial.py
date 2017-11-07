@@ -167,16 +167,17 @@ class Serial:
             self._serial.flushOutput()
             self._serial.flushInput()
 
-    def close(self, clean_color=True):
+    def disconnect(self):
+        self._stop_task = True
+        self._serial.close()
+
+    def destroy(self, clean_color=True):
         """Close serial connection
 
         Closes the serial connection in the port selected.
         _stop_task will be updated before close the port to avoid the overlaped
         error,
         """
-        self._stop_task = True
-        self._serial.close()
-
         port = self._serial.port
 
         in_use.remove(port)

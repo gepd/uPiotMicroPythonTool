@@ -123,7 +123,7 @@ class upiotBurnFirmwareCommand(WindowCommand):
             return
 
         if(self.port in serial.in_use):
-            serial.serial_dict[self.port].close()
+            serial.serial_dict[self.port].disconnect()
 
         Command().run(options, port=self.port)
 

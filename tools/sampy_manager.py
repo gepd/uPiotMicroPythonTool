@@ -50,7 +50,7 @@ def start_sampy():
     # close the current connection in open port
     if(port in serial.in_use):
         run_serial = serial.serial_dict[port]
-        run_serial.close(clean_color=False)
+        run_serial.disconnect()
 
     # message printer
     txt = message.open(port)
