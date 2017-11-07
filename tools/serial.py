@@ -188,7 +188,7 @@ class Serial:
         del serial_dict[port]
 
         if(clean_color):
-            status_color.remove()
+            status_color.set("error", 2000)
 
 
 def establish_connection(port):
