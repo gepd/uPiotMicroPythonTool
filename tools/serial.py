@@ -151,8 +151,8 @@ class Serial:
             try:
                 data = self.readable()
             except pyserial.serialutil.SerialException:
-                self.close()
-                status_color.set("error", 2000)
+                self.disconnect()
+                self.destroy()
                 printer("\n\nSerialError: device disconected")
                 break
 
