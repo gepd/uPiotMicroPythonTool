@@ -167,6 +167,7 @@ class Serial:
         sleep(1.5)
 
         self.flush()
+        self._stop_task = False
 
         while(not self._stop_task):
             try:
@@ -231,19 +232,18 @@ def establish_connection(port):
     except:
         link = Serial(port)
 
-    if(link.is_running()):
-        return
-
     txt = message.open(port)
-    try:
-        link.open()
-    except pyserial.serialutil.SerialException as e:
-        if('could not open port' in str(e)):
-            txt.print(errors.serialError_noaccess)
-            status_color.remove()
-        return
 
-    status_color.set("success")
+    if(not link.is_running()):
+        try:
+            link.open()
+        except pyserial.serialutil.SerialException as e:
+            if('could not open port' in str(e)):
+                txt.print(errors.serialError_noaccess)
+                status_color.remove()
+            return
+
+        status_color.set("success")
 
     Thread(target=link.keep_listen, args=(txt.print,)).start()
 
