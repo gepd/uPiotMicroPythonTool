@@ -46,6 +46,9 @@ class Serial:
         self._serial.port = port
         self._serial.baudrate = baudrate
         self._serial.timeout = timeout
+        self._serial.dtr = False
+        self._serial.rts = False
+        self._serial.interCharTimeout = 1
 
         self._stop_task = True
 
@@ -68,6 +71,24 @@ class Serial:
         if(port not in in_use):
             in_use.append(port)
             serial_dict[port] = self
+
+    def raw(self):
+        """Return Serial object
+
+        Returns the Serial object from pyserial instead of this serial class
+
+        Returns:
+            Serial -- serial object
+        """
+        return self._serial
+
+    def stop_task(self):
+        """Stop keep listen
+
+        Stops the keep_listen loop and flush the in and out serial data
+        """
+        self._stop_task = True
+        self.flush()
 
     def receive(self):
         """Receive data

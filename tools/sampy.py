@@ -29,6 +29,7 @@ import os
 from sublime import platform, set_timeout_async
 from ..tools.ampy import files
 from ..tools.ampy import pyboard
+from ..tools import serial
 
 _board = None
 
@@ -55,7 +56,9 @@ class Sampy:
         # in windows_full_port_name function).
         if platform() == 'windows':
             port = windows_full_port_name(port)
-        _board = pyboard.Pyboard(port, baudrate, data_consumer=data_consumer)
+
+        raw = serial.serial_dict[port].raw()
+        _board = pyboard.Pyboard(oserial=raw, data_consumer=data_consumer)
 
     def get(self, remote_file, local_file=None):
         """

@@ -50,7 +50,7 @@ def start_sampy(quiet=False):
     # close the current connection in open port
     if(port in serial.in_use and not quiet):
         run_serial = serial.serial_dict[port]
-        run_serial.disconnect()
+        run_serial.stop_task()
 
     # message printer
     txt = message.open(port)
@@ -103,8 +103,6 @@ def run_file(filepath):
 
     txt.print("\n[done]")
 
-    sampy.close()
-
     finished_action()
 
 
@@ -119,8 +117,6 @@ def list_files():
 
     for filename in sampy.ls():
         txt.print('\n' + filename)
-
-    sampy.close()
 
     finished_action()
 
@@ -144,8 +140,6 @@ def get_file(filename):
     output = output.replace('\r\n', '\n').replace('\r', '\n')
 
     txt.print('\n\n' + output)
-
-    sampy.close()
 
     finished_action()
 
@@ -173,8 +167,6 @@ def get_files(destination):
                 file.write(sampy.get(filename))
 
     txt.print("\n[done]")
-
-    sampy.close()
 
     finished_action()
 
@@ -218,8 +210,6 @@ def put_file(filepath):
 
     txt.print('\n\n' + output)
 
-    sampy.close()
-
     finished_action()
 
 
@@ -244,8 +234,6 @@ def remove_file(filepath):
 
     txt.print('\n\n' + output)
 
-    sampy.close()
-
     finished_action()
 
 
@@ -269,8 +257,6 @@ def make_folder(folder_name):
 
     txt.print('\n\n' + output)
 
-    sampy.close()
-
     finished_action()
 
 
@@ -293,8 +279,6 @@ def remove_folder(folder_name):
         output = str(e)
 
     txt.print('\n\n' + output)
-
-    sampy.close()
 
     finished_action()
 

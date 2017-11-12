@@ -119,50 +119,12 @@ class Pyboard:
     port = None
     data_consumer = None
 
-    def __init__(self, device, baudrate=115200, user='micro', password='python', wait=0, data_consumer=None):
+    def __init__(self, oserial, user='micro', password='python', data_consumer=None):
         self.data_consumer = data_consumer
-        if device and device[0].isdigit() and device[-1].isdigit() and device.count('.') == 3:
-            # device looks like an IP address
-            self.serial = TelnetToSerial(
-                device, user, password, read_timeout=10)
-        else:
-            from .. import pyserial as serial
-            delayed = False
-            for attempt in range(wait + 1):
-                try:
-                    self.serial = serial.Serial(
-                        device, baudrate=baudrate, interCharTimeout=1)
-
-                    in_use.append(device)
-                    serial_dict[device] = self
-
-                    self.port = device
-                    break
-                except (OSError, IOError):  # Py2 and Py3 have different errors
-                    if wait == 0:
-                        continue
-                    if attempt == 0:
-                        sys.stdout.write(
-                            'Waiting {} seconds for pyboard '.format(wait))
-                        delayed = True
-                time.sleep(1)
-                sys.stdout.write('.')
-                sys.stdout.flush()
-            else:
-                if delayed:
-                    print('')
-                raise PyboardError('failed to access ' + device)
-            if delayed:
-                print('')
+        self.serial = oserial
 
     def write(self, data):
         self.serial.write(data)
-
-    def close(self):
-        in_use.remove(self.port)
-        del serial_dict[self.port]
-
-        self.serial.close()
 
     def read_until(self, min_num_bytes, ending, timeout=10):
         frepl = b'Type "help()" for more information'
@@ -191,6 +153,7 @@ class Pyboard:
     def enter_raw_repl(self):
         # ctrl-C twice: interrupt any running program
         self.serial.write(b'\r\x03\x03')
+        self.serial.write(b'\x04')
 
         # flush input (without relying on serial.flushInput())
         n = self.serial.inWaiting()
