@@ -35,6 +35,9 @@ class upiotConsoleWriteCommand(WindowCommand):
     def run(self):
         self.window.show_input_panel('>>>', '', self.callback, None, None)
 
+    def is_eable(self):
+        return bool(serial.in_use)
+
     def callback(self, data):
         """Console write callback
 
@@ -65,10 +68,6 @@ class upiotConsoleWriteCommand(WindowCommand):
 
             self.window.run_command('upiot_console_write')
             return
-
-        # establish a connection if it doesn't exists
-        if(self.port not in serial.in_use):
-            serial.establish_connection(self.port)
 
         link = serial.serial_dict[self.port]
 
