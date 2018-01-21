@@ -101,10 +101,6 @@ def download_file(file_url, dst_path, callback=None):
     filename = file_url.split('/')[-1]
     dst_path = path.join(dst_path, filename)
 
-    # stop if the file already exits
-    if(path.exists(dst_path)):
-        return True
-
     with open(dst_path, 'wb') as file:
         try:
             req = requests.get(file_url, stream=True, headers=headers)
