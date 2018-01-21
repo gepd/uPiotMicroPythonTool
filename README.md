@@ -97,6 +97,7 @@ Usage: `sampy COMMAND [ARGS]`
 |**mkdir** folder_name|Create a directory on the board|
 |**rmdir** folder_name|Forcefully remove a folder and all its content from board|
 |**reset**|Perform soft reset/reboot of the board|
+|**--close**|Closes the connection between the console and the serial port|
 |**--help**|Shows this information|
 
 > Note that if you don't write prefix 'sampy' in the console the string will be sent as a raw text to the device (with the `\r\n` ending)
