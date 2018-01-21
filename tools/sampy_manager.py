@@ -103,7 +103,7 @@ def run_file(filepath):
         sampy.run(filepath)
         txt.print("\n[done]")
     except AttributeError as e:
-        txt.print("\n\nOpening the console...\nRun the command again.")
+        txt.print("\n\nOpening console...\nRun the command again.")
 
     finished_action()
 
@@ -212,10 +212,11 @@ def put_file(filepath):
             output = '[done]'
         except FileNotFoundError as e:
             output = str(e)
-        except file.PyboardError as e:
-            txt.print("\n\nError putting the file.\nReason: " + str(e))
+        except files.PyboardError as e:
+            txt.print('\n\nError putting the file.\nReason: ' + str(e))
             return finished_action()
-
+        except AttributeError as e:
+            output = 'Opening console...\nRun the command again.'
         txt.print('\n\n' + output)
 
     except TypeError as e:
