@@ -93,8 +93,11 @@ def remove(remove_path=None):
             rmtree(remove_path)
         return
 
-    if(path.exists(theme_path)):
-        remove_file(theme_path)
+    try:
+        if(path.exists(theme_path)):
+            remove_file(theme_path)
+    except:
+        pass
 
 
 def check_folder_paths():

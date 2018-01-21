@@ -9,8 +9,8 @@
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -19,10 +19,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import ast
 import textwrap
-
-from .pyboard import PyboardError
 
 
 # Amount of data to read or write to the serial port at a time.
@@ -32,6 +31,10 @@ BUFFER_SIZE = 32
 
 
 class DirectoryExistsError(Exception):
+    pass
+
+
+class PyboardError(BaseException):
     pass
 
 
@@ -59,6 +62,7 @@ class Files(object):
         # expects string data.
         command = """
             import sys
+            file = b''
             with open('{0}', 'rb') as infile:
                 while True:
                     result = infile.read({1})
@@ -66,7 +70,9 @@ class Files(object):
                         break
                     len = sys.stdout.write(result)
         """.format(filename, BUFFER_SIZE)
-        self._pyboard.enter_raw_repl()
+
+        self._pyboard.enter_raw()
+
         try:
             out = self._pyboard.exec_(textwrap.dedent(command))
         except PyboardError as ex:
@@ -76,10 +82,12 @@ class Files(object):
                 raise RuntimeError('No such file: {0}'.format(filename))
             else:
                 raise ex
-        self._pyboard.exit_raw_repl()
+
+        self._pyboard.exit_raw()
+
         return out
 
-    def ls(self, directory='/'):
+    def ls(self, directory):
         """List the contents of the specified directory (or root if none is
         specified).  Returns a list of strings with the names of files in the
         specified directory.
@@ -91,11 +99,13 @@ class Files(object):
                 import os
             except ImportError:
                 import uos as os
-            print({{f : uos.stat(f)[0] for f in uos.listdir('{0}')}})
+            print(os.listdir('{0}'))
         """.format(directory)
-        self._pyboard.enter_raw_repl()
+
+        self._pyboard.enter_raw()
+
         try:
-            name2stat = self._pyboard.exec_(textwrap.dedent(command))
+            out = self._pyboard.exec_(textwrap.dedent(command))
         except PyboardError as ex:
             # Check if this is an OSError #2, i.e. directory doesn't exist and
             # rethrow it as something more descriptive.
@@ -103,20 +113,15 @@ class Files(object):
                 raise RuntimeError('No such directory: {0}'.format(directory))
             else:
                 raise ex
-        out = []
-        for f_name, f_stat in sorted(
-                ast.literal_eval(name2stat.decode('utf-8')).items()):
-            if stat.S_ISDIR(f_stat):
-                out.append(f_name + '/')
-            else:
-                out.append(f_name)
-        self._pyboard.exit_raw_repl()
+
+        self._pyboard.exit_raw()
+
         # Parse the result list and return it.
-        return out
+        return ast.literal_eval(out.decode('utf-8'))
 
     def mkdir(self, directory):
         """Create the specified directory.  Note this cannot create a recursive
-        hierarchy of directories, instead each one should be created separately.
+        hierarchy of directories, instead each one should be created separately
         """
         # Execute os.mkdir command on the board.
         command = """
@@ -126,7 +131,9 @@ class Files(object):
                 import uos as os
             os.mkdir('{0}')
         """.format(directory)
-        self._pyboard.enter_raw_repl()
+
+        self._pyboard.enter_raw()
+
         try:
             out = self._pyboard.exec_(textwrap.dedent(command))
         except PyboardError as ex:
@@ -136,13 +143,14 @@ class Files(object):
                     'Directory already exists: {0}'.format(directory))
             else:
                 raise ex
-        self._pyboard.exit_raw_repl()
+
+        self._pyboard.exit_raw()
 
     def put(self, filename, data):
         """Create or update the specified file with the provided data.
         """
         # Open the file for writing on the board and write chunks of data.
-        self._pyboard.enter_raw_repl()
+        self._pyboard.enter_raw()
         self._pyboard.exec_("f = open('{0}', 'wb')".format(filename))
         size = len(data)
         # Loop through and write a buffer size chunk of data at a time.
@@ -155,7 +163,7 @@ class Files(object):
                 chunk = 'b' + chunk
             self._pyboard.exec_("f.write({0})".format(chunk))
         self._pyboard.exec_('f.close()')
-        self._pyboard.exit_raw_repl()
+        self._pyboard.exit_raw()
 
     def rm(self, filename):
         """Remove the specified file or directory."""
@@ -166,7 +174,7 @@ class Files(object):
                 import uos as os
             os.remove('{0}')
         """.format(filename)
-        self._pyboard.enter_raw_repl()
+        self._pyboard.enter_raw()
         try:
             out = self._pyboard.exec_(textwrap.dedent(command))
         except PyboardError as ex:
@@ -182,7 +190,7 @@ class Files(object):
                     'Directory is not empty: {0}'.format(filename))
             else:
                 raise ex
-        self._pyboard.exit_raw_repl()
+        self._pyboard.exit_raw()
 
     def rmdir(self, directory):
         """Forcefully remove the specified directory and all its children."""
@@ -213,7 +221,7 @@ class Files(object):
                 os.rmdir(directory)
             rmdir('{0}')
         """.format(directory)
-        self._pyboard.enter_raw_repl()
+        self._pyboard.enter_raw()
         try:
             out = self._pyboard.exec_(textwrap.dedent(command))
         except PyboardError as ex:
@@ -224,13 +232,13 @@ class Files(object):
                 raise RuntimeError('No such directory: {0}'.format(directory))
             else:
                 raise ex
-        self._pyboard.exit_raw_repl()
+        self._pyboard.exit_raw()
 
     def run(self, filename):
         """Run the provided script and show the output in realtime.
         If a print callback was provided in the pyboard module, it will be
         used to print the output instead of print() used by the ST console
         """
-        self._pyboard.enter_raw_repl()
+        self._pyboard.enter_raw()
         self._pyboard.execfile(filename)
-        self._pyboard.exit_raw_repl()
+        self._pyboard.exit_raw()

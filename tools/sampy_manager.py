@@ -28,7 +28,7 @@ from os import path, mkdir
 from ..tools import check_sidebar_folder, make_folder as mkfolder
 from ..tools import message, serial, errors, status_color
 from ..tools.sampy import Sampy
-from ..tools.ampy import files, pyboard
+from ..tools.ampy import files
 
 txt = None
 port = None
@@ -59,7 +59,7 @@ def start_sampy(quiet=False):
     if(port and not quiet):
         try:
             return Sampy(port, data_consumer=txt.print)
-        except pyboard.PyboardError as e:
+        except file.PyboardError as e:
             from sys import exit
 
             if('failed to access' in str(e)):
@@ -99,9 +99,11 @@ def run_file(filepath):
     head = '\n\n>> Run {0}\n\n"ctrl+shift+c" to stop the script.\n---'
     txt.print(head.format(file))
 
-    sampy.run(filepath)
-
-    txt.print("\n[done]")
+    try:
+        sampy.run(filepath)
+        txt.print("\n[done]")
+    except AttributeError as e:
+        txt.print("\n\nOpening the console...\nRun the command again.")
 
     finished_action()
 
@@ -155,9 +157,11 @@ def get_files(destination):
     destination = path.normpath(destination)
     mkfolder(destination)
 
-    txt.print('\n\n>> get from device to {0}'.format(destination))
+    txt.print('\n\n>> Storing in {0}\n'.format(destination))
 
     for filename in sampy.ls():
+        txt.print('\nRetrieving ' + filename + ' ...')
+
         filepath = path.normpath(path.join(destination, filename))
         if(filename.endswith('/')):
             if(not path.exists(filepath)):
@@ -166,14 +170,14 @@ def get_files(destination):
             with open(filepath, 'w') as file:
                 file.write(sampy.get(filename))
 
-    txt.print("\n[done]")
+    txt.print("\n\n[done]")
 
     finished_action()
 
     if(check_sidebar_folder(destination)):
         return
 
-    caption = "files retrieved, would you like to" \
+    caption = "files retrieved, would you like to " \
         "add the folder to your current proyect?"
     answer = sublime.yes_no_cancel_dialog(caption, "Add", "Append")
 
@@ -199,16 +203,23 @@ def put_file(filepath):
     """
     sampy = start_sampy()
 
-    file = path.basename(filepath)
-    txt.print('\n\n>> put {0}'.format(file))
-
     try:
-        sampy.put(path.normpath(filepath))
-        output = '[done]'
-    except FileNotFoundError as e:
-        output = str(e)
+        file = path.basename(filepath)
+        txt.print('\n\n>> put {0}'.format(file))
 
-    txt.print('\n\n' + output)
+        try:
+            sampy.put(path.normpath(filepath))
+            output = '[done]'
+        except FileNotFoundError as e:
+            output = str(e)
+        except file.PyboardError as e:
+            txt.print("\n\nError putting the file.\nReason: " + str(e))
+            return finished_action()
+
+        txt.print('\n\n' + output)
+
+    except TypeError as e:
+        txt.print("\n\n" + str(e))
 
     finished_action()
 

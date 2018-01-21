@@ -36,7 +36,7 @@ class upiotRemoveFolderCommand(WindowCommand):
         if(not port):
             return
 
-        self.window.show_input_panel('Name', '/', self.callback, None, None)
+        self.window.show_input_panel('Name', '', self.callback, None, None)
 
     def callback(self, folder):
         def remove_folder():

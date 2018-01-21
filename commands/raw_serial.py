@@ -26,7 +26,7 @@ import sublime
 from sublime_plugin import WindowCommand
 
 from ..tools import serial
-from ..tools.ampy import pyboard
+from ..tools.ampy import files
 from ..tools import str_cmd_serial
 
 
@@ -39,5 +39,5 @@ class upiotRawSerialCommand(WindowCommand):
             sserial = serial.serial_dict[port]
             sserial.write(str_cmd_serial(data))
         except:
-            sserial = pyboard.serial_dict[port]
+            sserial = files.serial_dict[port]
             sserial.write(str_cmd_serial(data))

@@ -28,8 +28,8 @@ import os
 
 from sublime import platform, set_timeout_async
 from ..tools.ampy import files
-from ..tools.ampy import pyboard
 from ..tools import serial
+from ..tools.repl import Repl
 
 _board = None
 
@@ -57,8 +57,13 @@ class Sampy:
         if platform() == 'windows':
             port = windows_full_port_name(port)
 
-        raw = serial.serial_dict[port].raw()
-        _board = pyboard.Pyboard(oserial=raw, data_consumer=data_consumer)
+        try:
+            raw = serial.serial_dict[port].raw()
+        except KeyError as e:
+            print("console not connected")
+            return
+
+        _board = Repl(serial=raw, data_consumer=data_consumer)
 
     def get(self, remote_file, local_file=None):
         """
@@ -110,7 +115,7 @@ class Sampy:
         board_files = files.Files(_board)
         board_files.mkdir(directory)
 
-    def ls(self, directory='/'):
+    def ls(self, directory=''):
         """List contents of a directory on the board.
 
         Can pass an optional argument which is the path to the directory.  The
@@ -182,10 +187,10 @@ class Sampy:
                     board_files.mkdir(remote_parent)
                     # Loop through all the files and put them on the board too.
                     for filename in child_files:
-                        with open(os.path.join(parent, filename), 'rb') as infile:
+                        with open(os.path.join(parent, filename), 'rb') as f:
                             remote_filename = posixpath.join(
                                 remote_parent, filename)
-                            board_files.put(remote_filename, infile.read())
+                            board_files.put(remote_filename, f.read())
                 except files.DirectoryExistsError:
                     # Ignore errors for directories that already exist.
                     pass
