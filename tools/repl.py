@@ -97,7 +97,7 @@ class Repl:
 
                     if(not quiet):
                         self.data_consumer(data)
-                        data = b''
+                    data = b''
 
         return session_data
 
