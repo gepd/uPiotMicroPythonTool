@@ -39,6 +39,10 @@ class upiotPutCurrentFileCommand(WindowCommand):
             return
 
         file = self.window.active_view().file_name()
+        view = self.window.active_view()
+
+        if(view.is_dirty()):
+            view.run_command('save')
 
         th = Thread(target=sampy_manager.put_file, args=(file,))
         th.start()
