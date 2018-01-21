@@ -29,6 +29,8 @@ BUFFER_SIZE = 32
 # This is kept small because small chips and USB to serial
 # bridges usually have very small buffers.
 
+SELECTED_TEXT = None
+
 
 class DirectoryExistsError(Exception):
     pass
@@ -239,6 +241,13 @@ class Files(object):
         If a print callback was provided in the pyboard module, it will be
         used to print the output instead of print() used by the ST console
         """
+        global SELECTED_TEXT
+
+        if(SELECTED_TEXT):
+            filename = SELECTED_TEXT
+
         self._pyboard.enter_raw()
         self._pyboard.execfile(filename)
         self._pyboard.exit_raw()
+
+        SELECTED_TEXT = None

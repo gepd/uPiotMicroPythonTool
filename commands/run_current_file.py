@@ -29,6 +29,7 @@ from ..tools import sampy_manager
 from ..tools import message
 from threading import Thread
 from ..tools.serial import selected_port
+from ..tools.ampy import files
 
 
 class upiotRunCurrentFileCommand(WindowCommand):
@@ -46,5 +47,9 @@ class upiotRunCurrentFileCommand(WindowCommand):
 
         if(view.is_dirty()):
             view.run_command('save')
+
+        view = self.window.active_view()
+        selection = view.sel()[0]
+        files.SELECTED_TEXT = bytes(view.substr(selection), 'utf-8')
 
         Thread(target=sampy_manager.run_file, args=(file,)).start()

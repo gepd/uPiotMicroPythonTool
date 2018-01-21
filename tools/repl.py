@@ -201,8 +201,12 @@ class Repl:
             bytes -- file content
         """
 
-        with open(filename, 'rb') as f:
-            pyfile = f.read()
+        try:
+            with open(filename, 'rb') as f:
+                pyfile = f.read()
+        except OSError as e:
+            pyfile = filename
+
         return self.exec_(pyfile, quiet=False)
 
 
