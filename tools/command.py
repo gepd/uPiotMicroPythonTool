@@ -31,8 +31,10 @@ from re import findall
 from sys import platform
 from subprocess import Popen, PIPE
 from functools import partial
-from ..tools import message, paths
 from collections import deque
+
+from ..tools import message, paths
+from ..tools.thread_progress import ThreadProgress
 
 _COMMAND_QUEUE = deque()
 _BUSY = False
@@ -53,7 +55,10 @@ class AsyncProcess(object):
             shell=True)
 
         if(self.proc.stdout):
-            threading.Thread(target=self.read_stdout).start()
+            th = threading.Thread(target=self.read_stdout)
+            th.start()
+
+            ThreadProgress(th, '', '')
 
         if(self.proc.stderr):
             threading.Thread(target=self.read_stderr).start()

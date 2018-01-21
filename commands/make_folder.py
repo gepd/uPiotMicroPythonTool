@@ -24,9 +24,11 @@
 
 import sublime
 from sublime_plugin import WindowCommand
+from threading import Thread
 
 from ..tools import sampy_manager
 from ..tools.serial import selected_port
+from ..tools.thread_progress import ThreadProgress
 
 
 class upiotMakeFolderCommand(WindowCommand):
@@ -39,6 +41,7 @@ class upiotMakeFolderCommand(WindowCommand):
         self.window.show_input_panel('Name', '', self.callback, None, None)
 
     def callback(self, folder_name):
-        def make_folder():
-            sampy_manager.make_folder(folder_name)
-        sublime.set_timeout_async(make_folder, 0)
+        th = Thread(target=sampy_manager.make_folder, args=(folder_name,))
+        th.start()
+
+        ThreadProgress(th, '', '')

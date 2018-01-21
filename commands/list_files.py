@@ -24,9 +24,11 @@
 
 import sublime
 from sublime_plugin import WindowCommand
+from threading import Thread
 
 from ..tools import sampy_manager
 from ..tools.serial import selected_port
+from ..tools.thread_progress import ThreadProgress
 
 
 class upiotListFilesCommand(WindowCommand):
@@ -36,4 +38,7 @@ class upiotListFilesCommand(WindowCommand):
         if(not port):
             return
 
-        sublime.set_timeout_async(sampy_manager.list_files, 0)
+        th = Thread(target=sampy_manager.list_files)
+        th.start()
+
+        ThreadProgress(th, '', '')

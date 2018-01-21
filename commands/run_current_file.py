@@ -24,12 +24,13 @@
 
 import sublime
 from sublime_plugin import WindowCommand
+from threading import Thread
 
 from ..tools import sampy_manager
 from ..tools import message
-from threading import Thread
 from ..tools.serial import selected_port
 from ..tools.ampy import files
+from ..tools.thread_progress import ThreadProgress
 
 
 class upiotRunCurrentFileCommand(WindowCommand):
@@ -52,4 +53,6 @@ class upiotRunCurrentFileCommand(WindowCommand):
         selection = view.sel()[0]
         files.SELECTED_TEXT = bytes(view.substr(selection), 'utf-8')
 
-        Thread(target=sampy_manager.run_file, args=(file,)).start()
+        th = Thread(target=sampy_manager.run_file, args=(file,))
+        th.start()
+        ThreadProgress(th, '', '')

@@ -24,9 +24,11 @@
 
 import sublime
 from sublime_plugin import WindowCommand
+from threading import Thread
 
 from ..tools import sampy_manager
 from ..tools.serial import selected_port
+from ..tools.thread_progress import ThreadProgress
 
 
 class upiotPutCurrentFileCommand(WindowCommand):
@@ -38,7 +40,6 @@ class upiotPutCurrentFileCommand(WindowCommand):
 
         file = self.window.active_view().file_name()
 
-        def put_file():
-            sampy_manager.put_file(file)
-
-        sublime.set_timeout_async(put_file, 0)
+        th = Thread(target=sampy_manager.put_file, args=(file,))
+        th.start()
+        ThreadProgress(th, '', '')

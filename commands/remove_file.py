@@ -24,9 +24,11 @@
 
 import sublime
 from sublime_plugin import WindowCommand
+from threading import Thread
 
 from ..tools import sampy_manager
 from ..tools.serial import selected_port
+from ..tools.thread_progress import ThreadProgress
 
 
 class upiotRemoveFileCommand(WindowCommand):
@@ -39,7 +41,7 @@ class upiotRemoveFileCommand(WindowCommand):
         self.window.show_input_panel('Path', '', self.callback, None, None)
 
     def callback(self, file):
-        def remove_file():
-            sampy_manager.remove_file(file)
+        th = Thread(target=sampy_manager.remove_file, args=(file,))
+        th.start()
 
-        sublime.set_timeout_async(remove_file, 0)
+        ThreadProgress(th, '', '')

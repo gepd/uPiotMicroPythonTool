@@ -25,8 +25,10 @@
 import sublime
 from sublime_plugin import WindowCommand
 from threading import Thread
+
 from ..tools import sampy_manager
 from ..tools.serial import selected_port
+from ..tools.thread_progress import ThreadProgress
 
 
 class upiotRetrieveAllFilesCommand(WindowCommand):
@@ -40,4 +42,7 @@ class upiotRetrieveAllFilesCommand(WindowCommand):
             'Destination:', '', self.callback, None, None)
 
     def callback(self, path):
-        Thread(target=sampy_manager.get_files, args=(path,)).start()
+        th = Thread(target=sampy_manager.get_files, args=(path,))
+        th.start()
+
+        ThreadProgress(th, '', '')
