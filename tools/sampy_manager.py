@@ -167,8 +167,8 @@ def get_files(destination):
             if(not path.exists(filepath)):
                 mkdir(filepath)
         else:
-            with open(filepath, 'w') as file:
-                file.write(sampy.get(filename))
+            with open(filepath, 'wb') as file:
+                sampy.get(filename, file)
 
     txt.print("\n\n[done]")
 
