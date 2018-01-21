@@ -117,8 +117,11 @@ def list_files():
 
     txt.print('\n\n>> sampy ls\n')
 
-    for filename in sampy.ls():
-        txt.print('\n' + filename)
+    try:
+        for filename in sampy.ls():
+            txt.print('\n' + filename)
+    except AttributeError as e:
+        txt.print("\n\nOpening console...\nRun the command again.")
 
     finished_action()
 
@@ -152,6 +155,7 @@ def get_files(destination):
     Gets all the files in the device and stored in the selected destination
     path.
     """
+    error = False
     sampy = start_sampy()
 
     destination = path.normpath(destination)
@@ -159,20 +163,28 @@ def get_files(destination):
 
     txt.print('\n\n>> Storing in {0}\n'.format(destination))
 
-    for filename in sampy.ls():
-        txt.print('\nRetrieving ' + filename + ' ...')
+    try:
+        for filename in sampy.ls():
+            txt.print('\nRetrieving ' + filename + ' ...')
 
-        filepath = path.normpath(path.join(destination, filename))
-        if(filename.endswith('/')):
-            if(not path.exists(filepath)):
-                mkdir(filepath)
-        else:
-            with open(filepath, 'wb') as file:
-                sampy.get(filename, file)
+            filepath = path.normpath(path.join(destination, filename))
+            if(filename.endswith('/')):
+                if(not path.exists(filepath)):
+                    mkdir(filepath)
+            else:
+                with open(filepath, 'wb') as file:
+                    sampy.get(filename, file)
+        output = '[done]'
+    except AttributeError as e:
+        output = 'Opening console...\nRun the command again.'
+        error = True
 
-    txt.print("\n\n[done]")
+    txt.print('\n\n' + output)
 
     finished_action()
+
+    if(error):
+        return
 
     if(check_sidebar_folder(destination)):
         return
@@ -243,6 +255,8 @@ def remove_file(filepath):
         output = '[done]'
     except RuntimeError as e:
         output = str(e)
+    except AttributeError as e:
+        output = 'Opening console...\nRun the command again.'
 
     txt.print('\n\n' + output)
 
@@ -266,6 +280,8 @@ def make_folder(folder_name):
         output = '[done]'
     except files.DirectoryExistsError as e:
         output = str(e)
+    except AttributeError as e:
+        output = 'Opening console...\nRun the command again.'
 
     txt.print('\n\n' + output)
 
@@ -289,6 +305,8 @@ def remove_folder(folder_name):
         output = '[done]'
     except RuntimeError as e:
         output = str(e)
+    except AttributeError as e:
+        output = 'Opening console...\nRun the command again.'
 
     txt.print('\n\n' + output)
 
