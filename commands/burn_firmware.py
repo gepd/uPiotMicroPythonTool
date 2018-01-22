@@ -89,9 +89,18 @@ class upiotBurnFirmwareCommand(WindowCommand):
         """
         firm_path = join(self.firmwares, '*')
 
+        # file names who shouldn't be displayed in the list
+        blacklist = [
+                        'bootloader',
+                        'bootloader.bin',
+                        'partitions_mpy.bin',
+                        'phy_init_data.bin'
+                    ]
+
         for firmware in glob(firm_path):
             name = basename(firmware)
-            self.items.append(name)
+            if(name not in blacklist):
+                self.items.append(name)
 
     def burn_firmware(self):
         """Burn firmware
@@ -103,7 +112,7 @@ class upiotBurnFirmwareCommand(WindowCommand):
         filename = self.url.split('/')[-1]
         firmware = join(self.firmwares, filename)
 
-        options = self.get_board_options(self.board)
+        options = self.get_board_options()
         options.append(firmware)
 
         caption = "Do you want to erase the flash memory?"
@@ -127,20 +136,16 @@ class upiotBurnFirmwareCommand(WindowCommand):
 
         Command().run(options, port=self.port)
 
-    @staticmethod
-    def get_board_options(board):
+    def get_board_options(self):
         """get board option
 
         get the options defined in the json board file
-
-        Arguments:
-            board {str} -- board selected
 
         Returns:
             list -- board options
         """
         board_folder = paths.boards_folder()
-        filename = board + '.json'
+        filename = self.board + '.json'
         board_path = join(board_folder, filename)
 
         board_file = []
@@ -155,6 +160,7 @@ class upiotBurnFirmwareCommand(WindowCommand):
                 options.append(option)
 
         wf = board_file['upload']['write_flash']
+        wf = wf.format(self.firmwares)
         options.append('write_flash ' + wf)
 
         return options

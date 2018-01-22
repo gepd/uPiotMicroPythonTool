@@ -1,0 +1,10 @@
+{
+    "id": "esp32-loboris",
+    "upload": {
+        "--chip": "esp32",
+        "--baud": "921600",
+        "--before": "default_reset",
+        "--after": "no_reset",
+        "write_flash": "-z --flash_mode dio --flash_freq 40m --flash_size detect 0x1000 {0}/bootloader/bootloader.bin 0xf000 {0}/phy_init_data.bin 0x8000 {0}/partitions_mpy.bin 0x10000"
+    }
+}
