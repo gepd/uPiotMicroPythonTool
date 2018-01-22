@@ -101,7 +101,17 @@ class Files(object):
                 import os
             except ImportError:
                 import uos as os
-            print(os.listdir('{0}'))
+
+            ls = []
+            for item in os.listdir('{0}'):
+                try:
+                    os.chdir(item)
+                    os.chdir("..")
+                    item += '/'
+                except:
+                    pass
+                ls.append(item)
+            print(ls)
         """.format(directory)
 
         self._pyboard.enter_raw()
