@@ -89,7 +89,7 @@ def download_file(file_url, dst_path, callback=None):
 
     Arguments:
        file_url {str} -- url with the file to download
-       dst_path {str} -- where file will be stored
+       dst_path {str} -- where file will be stored (including file name)
        callback {obj} -- callback to show the progress of the download
 
     Returns:
@@ -98,8 +98,7 @@ def download_file(file_url, dst_path, callback=None):
     downloaded = 0
     progress_qty = 5  # numbers of symbols to show when it downloading (total)
     headers = get_headers()
-    filename = file_url.split('/')[-1]
-    dst_path = path.join(dst_path, filename)
+    
 
     with open(dst_path, 'wb') as file:
         try:

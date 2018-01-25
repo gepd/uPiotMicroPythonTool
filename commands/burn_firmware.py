@@ -30,7 +30,7 @@ from sublime_plugin import WindowCommand
 
 from glob import glob
 from json import loads
-from os.path import join, basename
+from os.path import join, basename, dirname, isfile
 
 from .. import tools
 from ..tools import paths
@@ -45,6 +45,7 @@ class upiotBurnFirmwareCommand(WindowCommand):
     items = None
     firmwares = None
     url = None
+    subfolder = None
 
     def run(self, selected=None):
         # only continue if a device is available
@@ -80,6 +81,10 @@ class upiotBurnFirmwareCommand(WindowCommand):
             return
 
         self.url = self.items[selection]
+
+        if(self.url == 'No firmware(s)'):
+            return
+        
         sublime.set_timeout_async(self.burn_firmware, 0)
 
     def firmware_list(self):
@@ -91,6 +96,8 @@ class upiotBurnFirmwareCommand(WindowCommand):
 
         # file names who shouldn't be displayed in the list
         blacklist = [
+                        'README.md',
+                        'sdkconfig',
                         'flash.sh',
                         'bootloader',
                         'bootloader.bin',
@@ -99,10 +106,23 @@ class upiotBurnFirmwareCommand(WindowCommand):
                         'phy_init_data.bin'
                     ]
 
-        for firmware in glob(firm_path):
-            name = basename(firmware)
-            if(name not in blacklist):
-                self.items.append(name)
+        # search for firmware files including a sub-folder
+        for files in glob(firm_path):
+            if(isfile(files)):
+                name = basename(files)
+                if(name not in blacklist):
+                    self.items.append(name)
+            else:
+                mfiles = join(files, '*')
+                for more in glob(mfiles):
+                    name = basename(more)
+                    if(name not in blacklist):
+                        self.subfolder = basename(dirname(more))
+                        name = self.subfolder + '/' + name
+                        self.items.append(name)
+        
+        if(not self.items):
+            self.items.append('No firmware(s)')
 
     def burn_firmware(self):
         """Burn firmware
@@ -112,7 +132,10 @@ class upiotBurnFirmwareCommand(WindowCommand):
         from ..tools.command import Command
 
         filename = self.url.split('/')[-1]
-        firmware = join(self.firmwares, filename)
+        if(self.subfolder):
+            firmware = join(self.firmwares, self.subfolder, filename)
+        else:
+            firmware = join(self.firmwares, filename)
 
         options = self.get_board_options()
         options.append(firmware)

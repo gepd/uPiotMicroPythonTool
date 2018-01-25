@@ -23,7 +23,10 @@
 # SOFTWARE.
 
 import sublime
+from time import time
 from sublime_plugin import WindowCommand
+from os import path, remove, rename
+from datetime import datetime
 
 from ..tools import paths
 from .. import tools
@@ -61,23 +64,65 @@ class upiotDownloadFirmwareCommand(WindowCommand):
         If the file isn't in the firmwares folder, it download the file and
         put it in a folder corresponding to the board selection
         """
+        tools.ACTIVE_VIEW = self.window.active_view()
+        tools.set_status('Preparing download')
+
         settings = sublime.load_settings(tools.SETTINGS_NAME)
         board = settings.get('board', None)
         folder = paths.firmware_folder(board)
         tools.make_folder(folder)
 
-        tools.ACTIVE_VIEW = self.window.active_view()
-        out = tools.download_file(self.url, folder, callback=tools.set_status)
+        filename = self.url.split('/')[-1]
+        destination = path.join(folder, filename)
+
+        out = tools.download_file(self.url, destination, callback=tools.set_status)
 
         if(out):
             tools.set_status('Download success')
+            self.extract_file(destination, folder)            
         else:
-            from os import path, remove
-
-            filename = self.url.split('/')[-1]
-            dst_path = path.join(folder, filename)
-            remove(dst_path)
-
+            remove(destination)
             tools.set_status('Error downloading')
 
         sublime.set_timeout_async(tools.clean_status, 2000)
+
+
+    def extract_file(self, filepath, destination):
+        tools.set_status('Extracting file...')
+
+        cur_datetime = datetime.now().strftime("%y%m%d-%H%M")
+        extension = filepath.split(".")[-1]
+        zip_name = path.basename(filepath).split(".")[0]
+        
+        if(extension not in ['zip', 'gz', 'bz2']):
+            return
+
+        if(extension in ['gz', 'bz2']):
+            import tarfile
+
+            tar = tarfile.open(filepath, 'r:' + extension)
+            for item in tar:
+                tar.extract(item, destination)
+
+        if(extension in ['zip']):
+            import zipfile
+
+            with zipfile.ZipFile(filepath, 'r') as file:
+                file.extractall(destination)
+
+        # new name based in the current time to avoid collition with futures downloads
+        extracted_folder = path.join(destination, 'esp32')
+        if(path.isdir(extracted_folder)):
+            rename(extracted_folder, path.join(destination, zip_name))
+
+        # rename MicroPython.bin to datetime based name
+        micropython = path.join(destination, zip_name, 'MicroPython.bin')
+        new_name = path.join(destination, zip_name, cur_datetime + '.bin')
+        if(path.isfile(micropython)):
+            rename(micropython, new_name)
+
+        remove(filepath)
+
+        
+
+        
