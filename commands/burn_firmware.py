@@ -91,9 +91,11 @@ class upiotBurnFirmwareCommand(WindowCommand):
 
         # file names who shouldn't be displayed in the list
         blacklist = [
+                        'flash.sh',
                         'bootloader',
                         'bootloader.bin',
                         'partitions_mpy.bin',
+                        'partitions_mpy.csv',
                         'phy_init_data.bin'
                     ]
 
