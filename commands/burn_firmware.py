@@ -153,11 +153,11 @@ class upiotBurnFirmwareCommand(WindowCommand):
 
         options.insert(0, "--port " + self.port)
 
-        if(not serial.check_port(self.port)):
-            return
-
         if(self.port in serial.in_use):
             serial.serial_dict[self.port].disconnect()
+
+        if(not serial.check_port(self.port)):
+            return
 
         Command().run(options, port=self.port)
 
@@ -184,8 +184,13 @@ class upiotBurnFirmwareCommand(WindowCommand):
                 option = "{0}{1}{2}".format(key, separator, value)
                 options.append(option)
 
+        if(self.subfolder):
+            replace_path = join(self.firmwares, self.subfolder)
+        else:
+            replace_path = self.firmwares
+
         wf = board_file['upload']['write_flash']
-        wf = wf.format(self.firmwares)
+        wf = wf.format(replace_path)
         options.append('write_flash ' + wf)
 
         return options
