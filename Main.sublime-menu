@@ -19,7 +19,7 @@
                                 "caption": "Settings",
                                 "command": "edit_settings", 
                                 "args": {
-                                    "base_file": "${packages}/upiot/Default.sublime-settings",
+                                    "base_file": "${packages}/uPIOT MicroPython Tool/Default.sublime-settings",
                                     "default": "[\n\t$0\n]\n"
                                 }
                             },
@@ -28,7 +28,7 @@
                                 "caption": "Key Bindings",
                                 "command": "edit_settings", 
                                 "args": {
-                                    "base_file": "${packages}/upiot/Default ($platform).sublime-keymap",
+                                    "base_file": "${packages}/uPIOT MicroPython Tool/Default ($platform).sublime-keymap",
                                     "default": "[\n\t$0\n]\n"
                                 }
                             },
